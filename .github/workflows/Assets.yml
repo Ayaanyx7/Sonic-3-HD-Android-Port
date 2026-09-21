@@ -14,18 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET
+      # Sets up standard Node runtime environment for the xnbcli engine tools
+      - name: Setup Node.js
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '8.x' # Keep .NET context for pipeline stability if required
 
-      - name: Install XnaConvert CLI
-        run: dotnet tool install --global XnaConvertApp
-
-      - name: Add .NET tools to PATH
-        run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-
-      # Fix: Download the 28.8MB zip straight from your GitHub Release page, bypassing repository limits
+      # Downloads the exact 28.8MB raw Content.zip straight from your Release tag bypass
       - name: Fetch Content Zip from Release
         uses: suisei-cn/actions-download-file@v1.6.0
         with:
@@ -38,15 +33,33 @@ jobs:
           mkdir -p raw_content
           unzip -o Content.zip -d raw_content/
 
-      - name: Convert XNB Textures to PNG
+      # Fetch the verified compiled standalone xnbcli utility package from official assets
+      - name: Download xnbcli Unpacker
+        uses: suisei-cn/actions-download-file@v1.6.0
+        with:
+          url: "https://github.com"
+          target: .
+          filename: xnbcli.zip
+
+      - name: Setup xnbcli Engine Utility
+        run: |
+          mkdir -p xnbcli_tool
+          unzip xnbcli.zip -d xnbcli_tool/
+          chmod +x xnbcli_tool/xnbcli
+
+      # Runs the unpacked binary tool across your assets directory structure
+      - name: Extract XNB Textures to Native PNGs
         run: |
           mkdir -p src/Content
-          xnaconvert -r -d raw_content -o src/Content
+          # xnbcli unpacks source structures into target destinations recursively
+          ./xnbcli_tool/xnbcli unpack raw_content src/Content
 
-      - name: Clean Up Temporary Assets
+      - name: Clean Up Temporary System Workspace
         run: |
           rm -rf raw_content
+          rm -rf xnbcli_tool
           rm Content.zip
+          rm xnbcli.zip
 
       - name: Commit and Push Extracted PNG Assets
         run: |
@@ -56,8 +69,8 @@ jobs:
           git add src/Content/
           
           if git diff-index --quiet HEAD --; then
-            echo "No changes to asset data"
+            echo "No changes to asset data detected"
           else
-            git commit -m "chore: auto-convert raw XNA assets to native PNG assets from release distribution"
+            git commit -m "chore: unpack and populate asset texture trees as native PNGs"
             git push origin HEAD:${{ github.ref_name }}
           fi

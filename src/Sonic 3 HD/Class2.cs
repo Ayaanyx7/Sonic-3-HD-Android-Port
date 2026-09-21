@@ -32,9 +32,10 @@ internal class Class2 : GClass26
 		GClass25.gclass25_0.spriteBatch_0.Begin();
 		Color white;
 		if (Class2.int_0 > 2)
-		{
-			white..ctor(Vector3.One * (float)(14 - Class2.int_0) / 10f);
-		}
+{
+    // Evaluates the Vector3 math cleanly and creates a structurally legal Color instance
+    white = new Color(Vector3.One * (float)(14 - Class2.int_0) / 10f);
+}
 		else
 		{
 			white = Color.White;

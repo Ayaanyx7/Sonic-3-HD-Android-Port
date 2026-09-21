@@ -6,6 +6,7 @@
     <OutputType>Exe</OutputType>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>7.3</LangVersion> 
     
     <!-- Prevents duplicate assembly metadata property conflicts -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

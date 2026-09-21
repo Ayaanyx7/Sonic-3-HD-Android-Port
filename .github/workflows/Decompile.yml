@@ -30,7 +30,7 @@ jobs:
       - name: Fetch De4dot Binary Bundle
         uses: suisei-cn/actions-download-file@v1.6.0
         with:
-          url: "https://github.com"
+          url: "https://github.com/ViRb3/de4dot-cex/releases/download/v4.0.0/de4dot-cex.zip"
           target: .
           filename: de4dot.zip
 

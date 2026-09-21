@@ -1,0 +1,63 @@
+name: Extract XNA Assets to PNG
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Install XnaConvert CLI
+        run: dotnet tool install --global XnaConvertApp
+
+      - name: Add .NET tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      # Fix: Download the 28.8MB zip straight from your GitHub Release page, bypassing repository limits
+      - name: Fetch Content Zip from Release
+        uses: suisei-cn/actions-download-file@v1.6.0
+        with:
+          url: "https://github.com{{ github.repository }}/releases/download/v0.0.1/Content.zip"
+          target: .
+          filename: Content.zip
+
+      - name: Unzip Compressed Raw Content
+        run: |
+          mkdir -p raw_content
+          unzip -o Content.zip -d raw_content/
+
+      - name: Convert XNB Textures to PNG
+        run: |
+          mkdir -p src/Content
+          xnaconvert -r -d raw_content -o src/Content
+
+      - name: Clean Up Temporary Assets
+        run: |
+          rm -rf raw_content
+          rm Content.zip
+
+      - name: Commit and Push Extracted PNG Assets
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add src/Content/
+          
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to asset data"
+          else
+            git commit -m "chore: auto-convert raw XNA assets to native PNG assets from release distribution"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

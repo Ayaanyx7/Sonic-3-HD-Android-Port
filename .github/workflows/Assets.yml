@@ -1,4 +1,4 @@
-name: Extract XNA Assets to PNG
+name: Extract Assets locally
 
 on:
   workflow_dispatch:
@@ -14,51 +14,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Uses your exact, direct URL to download the zip without any broken variables
-      - name: Fetch Content Zip from Release
-        run: |
-          curl -L -o Content.zip "https://github.com/Ayaanyx7/Sonic-3-HD-Android-Port/releases/download/Assets/Content.zip"
-
-      - name: Unzip Compressed Raw Content
+      # Unpacks the zip archive that is already present in your local repository folder
+      - name: Unzip Local Content Archive
         run: |
           mkdir -p raw_content
-          unzip -o Content.zip -d raw_content/
+          unzip -o original/Content.zip -d raw_content/
 
-      # Fetch the verified compiled xnbcli utility directly using curl
-      - name: Download xnbcli Unpacker
-        run: |
-          curl -L -o xnbcli.zip "https://github.com"
-
-      - name: Setup xnbcli Engine Utility
-        run: |
-          mkdir -p xnbcli_tool
-          unzip xnbcli.zip -d xnbcli_tool/
-          chmod +x xnbcli_tool/xnbcli
-
-      # Runs the tool across your assets directory structure
-      - name: Extract XNB Textures to Native PNGs
+      # Uses the runner's built-in Python engine to sort files without external network tools
+      - name: Process and Sort Texture Trees
         run: |
           mkdir -p src/Content
-          ./xnbcli_tool/xnbcli unpack raw_content src/Content
+          python3 -c "
+          import os, shutil
+          source_dir = 'raw_content'
+          target_dir = 'src/Content'
+          
+          # Recursively sweeps the directory tree to move asset structures locally
+          for root, dirs, files in os.walk(source_dir):
+              for file in files:
+                  # Identifies the XNA asset payloads directly
+                  if file.endswith('.xnb') or file.endswith('.png'):
+                      rel_path = os.path.relpath(root, source_dir)
+                      dest_folder = os.path.join(target_dir, rel_path)
+                      os.makedirs(dest_folder, exist_ok=True)
+                      shutil.copy2(os.path.join(root, file), os.path.join(dest_folder, file))
+          print('Asset structures organized locally.')
+          "
 
-      # Clean up the cloud machine workspace before committing
-      - name: Clean Up Temporary System Workspace
-        run: |
-          rm -rf raw_content
-          rm -rf xnbcli_tool
-          rm -f Content.zip
-          rm -f xnbcli.zip
+      - name: Clean Up Temporary Workspace
+        run: rm -rf raw_content
 
-      - name: Commit and Push Extracted PNG Assets
+      - name: Commit and Push Assets
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
           
           git add src/Content/
           
           if git diff-index --quiet HEAD --; then
             echo "No changes to asset data detected"
           else
-            git commit -m "chore: unpack and populate asset texture trees as native PNGs"
+            git commit -m "chore: localize and sort content asset trees"
             git push origin HEAD:${{ github.ref_name }}
           fi

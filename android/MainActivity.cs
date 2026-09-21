@@ -1,7 +1,7 @@
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using Android.View;
+using Android.Views;
 using Microsoft.Xna.Framework;
 
 [Activity(Label = "Sonic 3 HD", 

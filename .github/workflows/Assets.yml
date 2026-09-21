@@ -14,10 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Uses the clean Linux environment variable ($GITHUB_REPOSITORY) instead of curly braces
+      # Explicitly map the repository value down into a clean terminal variable called REPO_PATH
       - name: Fetch Content Zip from Release
+        env:
+          REPO_PATH: ${{ github.repository }}
         run: |
-          curl -L -o Content.zip "https://github.com{GITHUB_REPOSITORY}/releases/download/v0.0.1/Content.zip"
+          curl -L -o Content.zip "https://github.com{REPO_PATH}/releases/download/v0.0.1/Content.zip"
 
       - name: Unzip Compressed Raw Content
         run: |

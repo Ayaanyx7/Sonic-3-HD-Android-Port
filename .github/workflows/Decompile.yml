@@ -58,7 +58,8 @@ jobs:
           mkdir -p src
           mono dnspy_bin/dnSpy.Console.exe \
             -o src \
-            --re-opts "version=CSharp5" \
+            -l csharp \
+            --lang-version csharp5 \
             "cleaned/sonic3hd_clean.exe"
 
       # Commits the cleanly compiled source tree back to your repository branch

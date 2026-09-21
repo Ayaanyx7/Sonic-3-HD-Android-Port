@@ -57,7 +57,7 @@ jobs:
         run: |
           mkdir -p src
           mono dnspy_bin/dnSpy.Console.exe \
-            --project-output src \
+            -o src \
             "cleaned/sonic3hd_clean.exe"
 
       # Commits the cleanly compiled source tree back to your repository branch

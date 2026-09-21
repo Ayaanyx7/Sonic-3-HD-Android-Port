@@ -14,14 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-
-      # Fix: Install a modernized fork of de4dot directly via dotnet tool
-      - name: Install de4dot
-        run: dotnet tool install --global de4dot.tool
+      # Installs the complete Mono framework to execute the engine on Ubuntu Linux
+      - name: Setup Mono Runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mono-devel mono-runtime unzip
 
       - name: Install ILSpy CLI
         run: dotnet tool install --global ilspycmd
@@ -29,11 +26,24 @@ jobs:
       - name: Add .NET tools to PATH
         run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
 
-      # Handled spaces inside "Sonic 3 HD Tech Demo.exe" correctly with double quotes
+      # Downloads the exact compiled archive asset cleanly via GitHub's native backend engine
+      - name: Fetch De4dot Binary Bundle
+        uses: suisei-cn/actions-download-file@v1.6.0
+        with:
+          url: "https://github.com/ViRb3/de4dot-cex/releases/download/v4.0.0/de4dot-cex.zip"
+          target: .
+          filename: de4dot.zip
+
+      - name: Unpack Deobfuscator
+        run: |
+          mkdir -p de4dot_bin
+          unzip de4dot.zip -d de4dot_bin
+
+      # Deobfuscates using Mono to cleanly pass the tech demo through the translation layer
       - name: Deobfuscate Executable
         run: |
           mkdir -p cleaned
-          de4dot "original/Sonic 3 HD Tech Demo.exe" -o "cleaned/sonic3hd_clean.exe"
+          mono de4dot_bin/de4dot.exe "original/Sonic 3 HD Tech Demo.exe" -o "cleaned/sonic3hd_clean.exe"
 
       - name: Decompile Sonic 3 HD
         run: |
@@ -54,6 +64,6 @@ jobs:
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit"
           else
-            git commit -m "chore: deobfuscate and decompile src folder"
+            git commit -m "chore: deobfuscate and decompile via native action downloader"
             git push origin HEAD:${{ github.ref_name }}
           fi

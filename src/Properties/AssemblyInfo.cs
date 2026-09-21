@@ -6,7 +6,6 @@ using System.Runtime.Versioning;
 
 [assembly: Guid("eecb9eee-5598-46cd-ae9b-a3d40e70049b")]
 [assembly: AssemblyConfiguration("")]
-[assembly: SuppressIldasm]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
 [assembly: AssemblyProduct("Sonic 3 HD")]

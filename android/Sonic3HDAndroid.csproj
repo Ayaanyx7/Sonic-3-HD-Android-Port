@@ -7,6 +7,9 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     
+    <!-- FORCE ASSEMBLY MATCHING: Crucial to give MainActivity access to internal classes -->
+    <AssemblyName>Sonic 3 HD</AssemblyName>
+    <RootNamespace>Sonic 3 HD</RootNamespace>
     
     <ApplicationId>com.sonic3hd.androidport</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
@@ -14,19 +17,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Include all source files under the decompiled folders -->
-    <Compile Include="src/Sonic 3 HD/**/*.cs" />
-    <Compile Include="src/*.cs" />
+    <!-- FIXED: Forces MSBuild to climb up out of the 'android' folder into 'src' -->
+    <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
     
-    <!-- Explicitly exclude the compiler-generated token module file to avoid target mismatches -->
-    <Compile Remove="src/Sonic 3 HD/&lt;Module&gt;*.cs" />
+    <!-- FIXED: Explicitly excludes the compiler-generated token module from the root lookup -->
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
 
     <!-- Modern MonoGame Engine Backend for Android -->
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Bundle the game assets automatically as raw Android app assets -->
-    <AndroidAsset Include="src/Content/**/*" />
+    <!-- FIXED: Climbs up out of the folder to map the asset directory tree -->
+    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
   </ItemGroup>
 </Project>

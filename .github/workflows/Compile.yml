@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Forces the host runner to ignore its pre-installed .NET 10 environment and stick to .NET 8
+      # Forces the host runner to ignore its pre-installed .NET environment and stick to .NET 8
       - name: Force .NET 8 SDK Rollback
         shell: bash
         run: |
@@ -34,18 +34,18 @@ jobs:
       - name: Install .NET Android Workload
         run: dotnet workload install android
 
-      # Restores NuGet packages (MonoGame mobile libraries) mapped inside your .csproj file
+      # FIXED: Points straight into the new 'android/' subfolder workspace path
       - name: Restore Dependencies
-        run: dotnet restore src/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
+        run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
-      # Compiles the game logic and packages the assets into a debug APK configuration
+      # FIXED: Compiles out of the 'android/' workspace directory path
       - name: Compile Android APK
         run: |
-          dotnet build src/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
+          dotnet build android/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
 
-      # Uploads the finished APK to GitHub so you can download it directly
+      # FIXED: Captures the final -aligned.apk bundle generated out of the target subfolder directory
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Sonic3HD-Android-Debug-Build
-          path: src/bin/Release/net8.0-android/*signed.apk
+          name: Sonic3HD-Android-Release-Build
+          path: android/bin/Release/net8.0-android/*-aligned.apk

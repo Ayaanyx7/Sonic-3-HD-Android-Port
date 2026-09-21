@@ -327,7 +327,7 @@ public class GClass25 : Game
 	private int int_22;
 	private int int_23;
 	private bool bool_2 = false;
-	public bool bool_1 = false; // Restored matching variable field
+	public static bool bool_1 = false; // Restored matching variable field
 	public RenderTarget2D renderTarget2D_0;
 	public static Stopwatch stopwatch_0 = new Stopwatch(); // Restored diagnostic clock tracker
 	public KeyboardState keyboardState_0;

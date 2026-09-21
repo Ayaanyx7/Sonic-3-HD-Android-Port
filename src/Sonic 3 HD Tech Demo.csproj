@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>Sonic 3 HD</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net40</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="c-ut--------3-2---.--g20r----pqg--m-j" />
+    <None Remove="qfd-d--5u-aa-6dvsr.-r------ec-jcw-x-v" />
+    <None Remove="---bty----91cw3-uo.dk-----o-c-pt-5--l" />
+    <None Remove="gnqne------wyew-a-.08ibs5--c---3--7-w" />
+    <EmbeddedResource Include="c-ut--------3-2---.--g20r----pqg--m-j" LogicalName="cut32.g20rpqgmj" />
+    <EmbeddedResource Include="qfd-d--5u-aa-6dvsr.-r------ec-jcw-x-v" LogicalName="qfdd5uaa6dvsr.recjcwxv" />
+    <EmbeddedResource Include="---bty----91cw3-uo.dk-----o-c-pt-5--l" LogicalName="bty91cw3uo.dkocpt5l" />
+    <EmbeddedResource Include="gnqne------wyew-a-.08ibs5--c---3--7-w" LogicalName="gnqnewyewa.08ibs5c37w" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,22 +8,24 @@ using Microsoft.Xna.Framework.Media;
 // Token: 0x0200002E RID: 46
 public class GClass25 : Game
 {
+	public static GClass25 gclass25_0;
+	
 	// Token: 0x060000C7 RID: 199 RVA: 0x00008470 File Offset: 0x00006670
 	public GClass25()
 	{
 		GClass25.gclass25_0 = this;
 		this.graphicsDeviceManager_0 = new GraphicsDeviceManager(this);
 		base.Content.RootDirectory = "Content";
-		if (this.bool_2)
-		{
-			this.int_22 = 1433;
-			this.int_23 = 806;
-		}
+		
+		// Locked to mobile rendering dimensions out-of-the-box
+		this.int_22 = 1280;
+		this.int_23 = 720;
+		
 		this.graphicsDeviceManager_0.PreferredBackBufferWidth = 1280;
 		this.graphicsDeviceManager_0.PreferredBackBufferHeight = 720;
 		this.graphicsDeviceManager_0.IsFullScreen = true;
 		base.IsMouseVisible = false;
-		base.Window.AllowUserResizing = true;
+		
 		GraphicsDeviceManager graphicsDeviceManager = this.graphicsDeviceManager_0;
 		base.IsFixedTimeStep = true;
 		graphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
@@ -38,11 +39,11 @@ public class GClass25 : Game
 	private void method_0()
 	{
 		this.keyboardState_0 = Keyboard.GetState();
-		if (this.keyboardState_0.IsKeyDown(27))
+		if (this.keyboardState_0.IsKeyDown(Keys.Escape))
 		{
 			base.Exit();
 		}
-		if (this.keyboardState_0.IsKeyDown(37))
+		if (this.keyboardState_0.IsKeyDown(Keys.Left))
 		{
 			this.int_13++;
 		}
@@ -50,7 +51,7 @@ public class GClass25 : Game
 		{
 			this.int_13 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(39))
+		if (this.keyboardState_0.IsKeyDown(Keys.Right))
 		{
 			this.int_14++;
 		}
@@ -58,7 +59,7 @@ public class GClass25 : Game
 		{
 			this.int_14 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(38))
+		if (this.keyboardState_0.IsKeyDown(Keys.Up))
 		{
 			this.int_15++;
 		}
@@ -66,7 +67,7 @@ public class GClass25 : Game
 		{
 			this.int_15 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(40))
+		if (this.keyboardState_0.IsKeyDown(Keys.Down))
 		{
 			this.int_16++;
 		}
@@ -74,7 +75,7 @@ public class GClass25 : Game
 		{
 			this.int_16 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(65))
+		if (this.keyboardState_0.IsKeyDown(Keys.A))
 		{
 			this.int_1++;
 		}
@@ -82,7 +83,7 @@ public class GClass25 : Game
 		{
 			this.int_1 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(83))
+		if (this.keyboardState_0.IsKeyDown(Keys.S))
 		{
 			this.int_2++;
 		}
@@ -90,7 +91,7 @@ public class GClass25 : Game
 		{
 			this.int_2 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(68))
+		if (this.keyboardState_0.IsKeyDown(Keys.D))
 		{
 			this.int_3++;
 		}
@@ -98,7 +99,7 @@ public class GClass25 : Game
 		{
 			this.int_3 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(77))
+		if (this.keyboardState_0.IsKeyDown(Keys.M))
 		{
 			this.int_5++;
 		}
@@ -106,7 +107,7 @@ public class GClass25 : Game
 		{
 			this.int_5 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(79))
+		if (this.keyboardState_0.IsKeyDown(Keys.O))
 		{
 			this.int_4++;
 		}
@@ -114,7 +115,7 @@ public class GClass25 : Game
 		{
 			this.int_4 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(76))
+		if (this.keyboardState_0.IsKeyDown(Keys.L))
 		{
 			this.int_6++;
 		}
@@ -122,7 +123,7 @@ public class GClass25 : Game
 		{
 			this.int_6 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(112))
+		if (this.keyboardState_0.IsKeyDown(Keys.F1))
 		{
 			this.int_17++;
 		}
@@ -130,7 +131,7 @@ public class GClass25 : Game
 		{
 			this.int_17 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(113))
+		if (this.keyboardState_0.IsKeyDown(Keys.F2))
 		{
 			this.int_18++;
 		}
@@ -138,7 +139,7 @@ public class GClass25 : Game
 		{
 			this.int_18 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(114))
+		if (this.keyboardState_0.IsKeyDown(Keys.F3))
 		{
 			this.int_19++;
 		}
@@ -146,7 +147,7 @@ public class GClass25 : Game
 		{
 			this.int_19 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(116))
+		if (this.keyboardState_0.IsKeyDown(Keys.F5))
 		{
 			this.int_20++;
 		}
@@ -154,7 +155,7 @@ public class GClass25 : Game
 		{
 			this.int_20 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(119))
+		if (this.keyboardState_0.IsKeyDown(Keys.F8))
 		{
 			this.int_21++;
 		}
@@ -162,7 +163,7 @@ public class GClass25 : Game
 		{
 			this.int_21 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(33))
+		if (this.keyboardState_0.IsKeyDown(Keys.PageUp))
 		{
 			this.int_7++;
 		}
@@ -170,7 +171,7 @@ public class GClass25 : Game
 		{
 			this.int_7 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(34))
+		if (this.keyboardState_0.IsKeyDown(Keys.PageDown))
 		{
 			this.int_8++;
 		}
@@ -178,7 +179,7 @@ public class GClass25 : Game
 		{
 			this.int_8 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(32))
+		if (this.keyboardState_0.IsKeyDown(Keys.Space))
 		{
 			this.int_12++;
 		}
@@ -186,7 +187,7 @@ public class GClass25 : Game
 		{
 			this.int_12 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(9))
+		if (this.keyboardState_0.IsKeyDown(Keys.Tab))
 		{
 			this.int_9++;
 		}
@@ -194,7 +195,7 @@ public class GClass25 : Game
 		{
 			this.int_9 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(36))
+		if (this.keyboardState_0.IsKeyDown(Keys.Home))
 		{
 			this.int_10++;
 		}
@@ -202,7 +203,7 @@ public class GClass25 : Game
 		{
 			this.int_10 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(35))
+		if (this.keyboardState_0.IsKeyDown(Keys.End))
 		{
 			this.int_11++;
 		}
@@ -210,7 +211,7 @@ public class GClass25 : Game
 		{
 			this.int_11 = 0;
 		}
-		if (this.keyboardState_0.IsKeyDown(13))
+		if (this.keyboardState_0.IsKeyDown(Keys.Enter))
 		{
 			this.int_0++;
 		}
@@ -221,12 +222,12 @@ public class GClass25 : Game
 		GClass31.smethod_1();
 	}
 
-	// Token: 0x060000C9 RID: 201 RVA: 0x00008924 File Offset: 0x00006B24
+	// Token: 0x060000Camp RID: 201 RVA: 0x00008924 File Offset: 0x00006B24
 	protected override void Initialize()
 	{
 		base.Initialize();
 		GClass31.smethod_0();
-		this.renderTarget2D_0 = new RenderTarget2D(this.graphicsDeviceManager_0.GraphicsDevice, this.int_22, this.int_23, false, 0, 0, 1, 2);
+		this.renderTarget2D_0 = new RenderTarget2D(this.graphicsDeviceManager_0.GraphicsDevice, this.int_22, this.int_23, false, SurfaceFormat.Color, DepthFormat.None, 1, RenderTargetUsage.DiscardContents);
 		DepthStencilState depthStencilState = new DepthStencilState();
 		depthStencilState.DepthBufferEnable = false;
 		depthStencilState.DepthBufferWriteEnable = false;
@@ -251,23 +252,16 @@ public class GClass25 : Game
 	// Token: 0x060000CC RID: 204 RVA: 0x00008A08 File Offset: 0x00006C08
 	protected override void Update(GameTime gameTime_0)
 	{
-		if (GamePad.GetState(0).Buttons.Back == 1)
+		if (GamePad.GetState(0).Buttons.Back == ButtonState.Pressed)
 		{
 			base.Exit();
 		}
 		if (base.IsActive)
 		{
-			Form form = (Form)Control.FromHandle(base.Window.Handle);
-			if (form.WindowState != FormWindowState.Minimized)
-			{
-				this.method_0();
-				this.gclass28_0.method_3();
-				if (this.int_19 == 1)
-				{
-					this.graphicsDeviceManager_0.ToggleFullScreen();
-				}
-				base.Update(gameTime_0);
-			}
+			// FIXED: Bypassed WinForms Desktop Minimisation Focus Tracking Loops for Mobile Runtimes
+			this.method_0();
+			this.gclass28_0.method_3();
+			base.Update(gameTime_0);
 		}
 	}
 
@@ -305,120 +299,10 @@ public class GClass25 : Game
 		}
 	}
 
-	// Token: 0x04000077 RID: 119
-	private GraphicsDeviceManager graphicsDeviceManager_0;
-
-	// Token: 0x04000078 RID: 120
-	public SpriteBatch spriteBatch_0;
-
-	// Token: 0x04000079 RID: 121
-	public GClass28 gclass28_0;
-
-	// Token: 0x0400007A RID: 122
-	public int int_0;
-
-	// Token: 0x0400007B RID: 123
-	public int int_1;
-
-	// Token: 0x0400007C RID: 124
-	public int int_2;
-
-	// Token: 0x0400007D RID: 125
-	public int int_3;
-
-	// Token: 0x0400007E RID: 126
-	public int int_4;
-
-	// Token: 0x0400007F RID: 127
-	public int int_5;
-
-	// Token: 0x04000080 RID: 128
-	public int int_6;
-
-	// Token: 0x04000081 RID: 129
-	public int int_7;
-
-	// Token: 0x04000082 RID: 130
-	public int int_8;
-
-	// Token: 0x04000083 RID: 131
-	public int int_9;
-
-	// Token: 0x04000084 RID: 132
-	public int int_10;
-
-	// Token: 0x04000085 RID: 133
-	public int int_11;
-
-	// Token: 0x04000086 RID: 134
-	public int int_12;
-
-	// Token: 0x04000087 RID: 135
-	public int int_13;
-
-	// Token: 0x04000088 RID: 136
-	public int int_14;
-
-	// Token: 0x04000089 RID: 137
-	public int int_15;
-
-	// Token: 0x0400008A RID: 138
-	public int int_16;
-
-	// Token: 0x0400008B RID: 139
-	public int int_17;
-
-	// Token: 0x0400008C RID: 140
-	public int int_18;
-
-	// Token: 0x0400008D RID: 141
-	public int int_19;
-
-	// Token: 0x0400008E RID: 142
-	public int int_20;
-
-	// Token: 0x0400008F RID: 143
-	public int int_21;
-
-	// Token: 0x04000090 RID: 144
-	public RenderTarget2D renderTarget2D_0;
-
-	// Token: 0x04000091 RID: 145
-	public static Stopwatch stopwatch_0;
-
-	// Token: 0x04000092 RID: 146
-	public KeyboardState keyboardState_0;
-
-	// Token: 0x04000093 RID: 147
-	public static Texture2D texture2D_0;
-
-	// Token: 0x04000094 RID: 148
+	private int int_22;
+	private int int_23;
+	private bool bool_2 = false;
 	public static Texture2D texture2D_1;
-
-	// Token: 0x04000095 RID: 149
 	public static Texture2D texture2D_2;
-
-	// Token: 0x04000096 RID: 150
 	public static Texture2D texture2D_3;
-
-	// Token: 0x04000097 RID: 151
-	public bool bool_0 = false;
-
-	// Token: 0x04000098 RID: 152
-	public static GClass25 gclass25_0;
-
-	// Token: 0x04000099 RID: 153
-	public static string string_0;
-
-	// Token: 0x0400009A RID: 154
-	private int int_22 = 1920;
-
-	// Token: 0x0400009B RID: 155
-	private int int_23 = 1200;
-
-	// Token: 0x0400009C RID: 156
-	public static bool bool_1 = false;
-
-	// Token: 0x0400009D RID: 157
-	private bool bool_2 = true;
 }

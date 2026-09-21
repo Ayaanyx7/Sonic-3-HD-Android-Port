@@ -14,32 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Sets up standard Node runtime environment for the xnbcli engine tools
-      - name: Setup Node.js
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x' # Keep .NET context for pipeline stability if required
-
-      # Downloads the exact 28.8MB raw Content.zip straight from your Release tag bypass
+      # We download the 28.8MB zip straight from your GitHub Release using standard curl, ensuring a safe slash route
       - name: Fetch Content Zip from Release
-        uses: suisei-cn/actions-download-file@v1.6.0
-        with:
-          url: "https://github.com{{ github.repository }}/releases/download/v0.0.1/Content.zip"
-          target: .
-          filename: Content.zip
+        run: |
+          curl -L -o Content.zip "https://github.com{{ github.repository }}/releases/download/v0.0.1/Content.zip"
 
       - name: Unzip Compressed Raw Content
         run: |
           mkdir -p raw_content
           unzip -o Content.zip -d raw_content/
 
-      # Fetch the verified compiled standalone xnbcli utility package from official assets
+      # Fetch the verified compiled xnbcli utility directly using curl
       - name: Download xnbcli Unpacker
-        uses: suisei-cn/actions-download-file@v1.6.0
-        with:
-          url: "https://github.com"
-          target: .
-          filename: xnbcli.zip
+        run: |
+          curl -L -o xnbcli.zip "https://github.com"
 
       - name: Setup xnbcli Engine Utility
         run: |
@@ -47,19 +35,19 @@ jobs:
           unzip xnbcli.zip -d xnbcli_tool/
           chmod +x xnbcli_tool/xnbcli
 
-      # Runs the unpacked binary tool across your assets directory structure
+      # Runs the tool across your assets directory structure
       - name: Extract XNB Textures to Native PNGs
         run: |
           mkdir -p src/Content
-          # xnbcli unpacks source structures into target destinations recursively
           ./xnbcli_tool/xnbcli unpack raw_content src/Content
 
+      # Clean up the cloud machine workspace before committing
       - name: Clean Up Temporary System Workspace
         run: |
           rm -rf raw_content
           rm -rf xnbcli_tool
-          rm Content.zip
-          rm xnbcli.zip
+          rm -f Content.zip
+          rm -f xnbcli.zip
 
       - name: Commit and Push Extracted PNG Assets
         run: |

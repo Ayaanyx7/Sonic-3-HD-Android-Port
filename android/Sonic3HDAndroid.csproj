@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Target modern Android via .NET 8 -->
+    <TargetFramework>net8.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    
+    
+    <ApplicationId>com.sonic3hd.androidport</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include all source files under the decompiled folders -->
+    <Compile Include="src/Sonic 3 HD/**/*.cs" />
+    <Compile Include="src/*.cs" />
+    
+    <!-- Explicitly exclude the compiler-generated token module file to avoid target mismatches -->
+    <Compile Remove="src/Sonic 3 HD/&lt;Module&gt;*.cs" />
+
+    <!-- Modern MonoGame Engine Backend for Android -->
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bundle the game assets automatically as raw Android app assets -->
+    <AndroidAsset Include="src/Content/**/*" />
+  </ItemGroup>
+</Project>

@@ -14,17 +14,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # We download the 28.8MB zip straight from your GitHub Release using standard curl, ensuring a safe slash route
+      # Uses the clean Linux environment variable ($GITHUB_REPOSITORY) instead of curly braces
       - name: Fetch Content Zip from Release
         run: |
-          curl -L -o Content.zip "https://github.com{{ github.repository }}/releases/download/v0.0.1/Content.zip"
+          curl -L -o Content.zip "https://github.com{GITHUB_REPOSITORY}/releases/download/v0.0.1/Content.zip"
 
       - name: Unzip Compressed Raw Content
         run: |
           mkdir -p raw_content
           unzip -o Content.zip -d raw_content/
 
-      # Fetch the verified compiled xnbcli utility directly using curl
       - name: Download xnbcli Unpacker
         run: |
           curl -L -o xnbcli.zip "https://github.com"
@@ -35,13 +34,11 @@ jobs:
           unzip xnbcli.zip -d xnbcli_tool/
           chmod +x xnbcli_tool/xnbcli
 
-      # Runs the tool across your assets directory structure
       - name: Extract XNB Textures to Native PNGs
         run: |
           mkdir -p src/Content
           ./xnbcli_tool/xnbcli unpack raw_content src/Content
 
-      # Clean up the cloud machine workspace before committing
       - name: Clean Up Temporary System Workspace
         run: |
           rm -rf raw_content

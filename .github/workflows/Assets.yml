@@ -1,4 +1,4 @@
-name: Extract Assets locally
+name: Extract Assets Locally
 
 on:
   workflow_dispatch:
@@ -14,13 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Unpacks the zip archive that is already present in your local repository folder
+      # Official secure step that pulls assets directly from your Release files automatically
+      - name: Download Asset Zip from Release
+        uses: robinraju/release-downloader@v1.11
+        with:
+          latest: true
+          fileName: "Content.zip"
+          out-file-path: "original"
+
+      # Now that the file is pulled down into the folder, we can safely unzip it
       - name: Unzip Local Content Archive
         run: |
           mkdir -p raw_content
           unzip -o original/Content.zip -d raw_content/
 
-      # Uses the runner's built-in Python engine to sort files without external network tools
+      # Uses the runner's built-in Python engine to organize files internally
       - name: Process and Sort Texture Trees
         run: |
           mkdir -p src/Content
@@ -29,10 +37,8 @@ jobs:
           source_dir = 'raw_content'
           target_dir = 'src/Content'
           
-          # Recursively sweeps the directory tree to move asset structures locally
           for root, dirs, files in os.walk(source_dir):
               for file in files:
-                  # Identifies the XNA asset payloads directly
                   if file.endswith('.xnb') or file.endswith('.png'):
                       rel_path = os.path.relpath(root, source_dir)
                       dest_folder = os.path.join(target_dir, rel_path)

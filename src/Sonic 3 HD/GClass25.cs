@@ -336,3 +336,28 @@ public class GClass25 : Game
 	public static Texture2D texture2D_2;
 	public static Texture2D texture2D_3;
 }
+
+namespace Microsoft.Xna.Framework.Graphics
+{
+    public static class SpriteEffectsExtensions
+    {
+        // Permits standard int casting loops directly down to SpriteEffects signatures
+        public static SpriteEffects ToSpriteEffects(this int value) => (SpriteEffects)value;
+    }
+}
+
+namespace System
+{
+    public static class ColorExtensions
+    {
+        // Re-injects a fake structural mapping pointer loop to trick the broken ..ctor() text outputs
+        public static void ctor(this ref Microsoft.Xna.Framework.Color color, Microsoft.Xna.Framework.Vector3 value)
+        {
+            color = new Microsoft.Xna.Framework.Color(value);
+        }
+        public static void ctor(this ref Microsoft.Xna.Framework.Color color, float r, float g, float b, float a)
+        {
+            color = new Microsoft.Xna.Framework.Color(r, g, b, a);
+        }
+    }
+}

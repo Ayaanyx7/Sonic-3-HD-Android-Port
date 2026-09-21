@@ -11,6 +11,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Forces the host runner to ignore its pre-installed .NET 10 environment and stick to .NET 8
+      - name: Force .NET 8 SDK Rollback
+        shell: bash
+        run: |
+          echo '{"sdk": {"version": "8.0.400", "rollForward": "latestMinor"}}' > global.json
+
       # Sets up .NET 8, which is the foundational engine framework for modern MonoGame
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -30,16 +36,16 @@ jobs:
 
       # Restores NuGet packages (MonoGame mobile libraries) mapped inside your .csproj file
       - name: Restore Dependencies
-        run: dotnet restore src/Sonic3HDAndroid.csproj
+        run: dotnet restore src/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
       # Compiles the game logic and packages the assets into a debug APK configuration
       - name: Compile Android APK
         run: |
-          dotnet build src/Sonic3HDAndroid.csproj -c Release -f net8.0-android
+          dotnet build src/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
 
-      # Uploads the finished APK to GitHub so you can download it directly from Safari
+      # Uploads the finished APK to GitHub so you can download it directly
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Sonic3HD-Android-Debug-Build
-          path: src/bin/Release/net8.0-android/*-Signed.apk
+          path: src/bin/Release/net8.0-android/*signed.apk

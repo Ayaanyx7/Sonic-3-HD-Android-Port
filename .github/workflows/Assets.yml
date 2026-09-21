@@ -14,18 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Explicitly map the repository value down into a clean terminal variable called REPO_PATH
+      # Uses your exact, direct URL to download the zip without any broken variables
       - name: Fetch Content Zip from Release
-        env:
-          REPO_PATH: ${{ github.repository }}
         run: |
-          curl -L -o Content.zip "https://github.com{REPO_PATH}/releases/download/v0.0.1/Content.zip"
+          curl -L -o Content.zip "https://github.com/Ayaanyx7/Sonic-3-HD-Android-Port/releases/download/Assets/Content.zip"
 
       - name: Unzip Compressed Raw Content
         run: |
           mkdir -p raw_content
           unzip -o Content.zip -d raw_content/
 
+      # Fetch the verified compiled xnbcli utility directly using curl
       - name: Download xnbcli Unpacker
         run: |
           curl -L -o xnbcli.zip "https://github.com"
@@ -36,11 +35,13 @@ jobs:
           unzip xnbcli.zip -d xnbcli_tool/
           chmod +x xnbcli_tool/xnbcli
 
+      # Runs the tool across your assets directory structure
       - name: Extract XNB Textures to Native PNGs
         run: |
           mkdir -p src/Content
           ./xnbcli_tool/xnbcli unpack raw_content src/Content
 
+      # Clean up the cloud machine workspace before committing
       - name: Clean Up Temporary System Workspace
         run: |
           rm -rf raw_content

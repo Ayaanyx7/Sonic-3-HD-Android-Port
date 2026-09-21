@@ -33,7 +33,7 @@ jobs:
             -p \
             --nested-directories \
             -o src \
-            "original/sonic 3 hd.exe"
+            "original/Sonic 3 HD Tech Demo.exe"
 
       - name: Commit and Push Source Code
         run: |

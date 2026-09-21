@@ -34,6 +34,23 @@ jobs:
       - name: Install .NET Android Workload
         run: dotnet workload install android
 
+            # NEW: Automatically sweeps and rewrites the broken decompiler structures globally
+      - name: Decompiler Syntax Code Patching
+        run: |
+          echo "Repairing broken decompiler syntax patterns..."
+          
+          # 1. Fixes broken constructor structures globally: 'variable..ctor(args)' -> 'variable = new Color(args)'
+          # Targets color, white, and other vector instances
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(([^)]+)\);/\1 = new Color(\2);/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(\);/\1 = new Color();/g' {} +
+
+          # 2. Fixes integer-to-SpriteEffects conversion mismatches by casting them explicitly: ', (SpriteEffects)X,'
+          # Common pattern found in GClass11, GClass17, GClass18, GClass19 drawing calls
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/, (0|1|2|3|4),/, (SpriteEffects)\1,/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/, (0|1|2|3|4)\);/, (SpriteEffects)\1\);/g' {} +
+
+          echo "Decompiler syntax repair completed successfully!"
+
       # FIXED: Points straight into the new 'android/' subfolder workspace path
       - name: Restore Dependencies
         run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false

@@ -45,14 +45,14 @@ jobs:
           mkdir -p cleaned
           mono de4dot_bin/de4dot.exe "original/Sonic 3 HD Tech Demo.exe" -o "cleaned/sonic3hd_clean.exe"
 
-      # FIXED: Swapped out the --lv flag for --no-ref-locals to bypass the console crash
+      # FIXED: Uses the exact syntax option matching the ILSpy console parser specification
       - name: Decompile Sonic 3 HD
         run: |
           mkdir -p src
           ilspycmd \
             -p \
             --nested-directories \
-            --no-ref-locals \
+            -lv CSharp5 \
             -o src \
             "cleaned/sonic3hd_clean.exe"
 

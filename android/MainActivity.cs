@@ -16,10 +16,10 @@ public class MainActivity : AndroidGameActivity
     protected override void OnCreate(Bundle bundle)
     {
         base.OnCreate(bundle);
-
-        // Direct invocation of the standard XNA Game sub-instance class 
-        var gameInstance = new global::Class2(); 
-
+        
+        // Target the actual, authentic game loop class directly!
+        var gameInstance = new global::GClass25(); 
+        
         SetContentView((View)gameInstance.Services.GetService(typeof(View)));
         gameInstance.Run();
     }

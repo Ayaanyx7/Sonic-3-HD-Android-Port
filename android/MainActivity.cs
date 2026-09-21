@@ -16,11 +16,10 @@ public class MainActivity : AndroidGameActivity
     protected override void OnCreate(Bundle bundle)
     {
         base.OnCreate(bundle);
-        
-        // Bypasses the Windows Forms startup object Class1 launcher entirely.
-        // Launches the primary Game instance engine class loop directly.
-        var gameInstance = new global::Sonic_3_HD.Class0(); 
-        
+
+        // Direct invocation of the standard XNA Game sub-instance class 
+        var gameInstance = new global::Class2(); 
+
         SetContentView((View)gameInstance.Services.GetService(typeof(View)));
         gameInstance.Run();
     }

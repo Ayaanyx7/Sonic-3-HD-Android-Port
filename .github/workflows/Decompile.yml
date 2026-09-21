@@ -1,0 +1,52 @@
+name: Decompile Sonic 3 HD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  decompile:
+    runs-on: ubuntu-latest
+
+    # Grants write access to the repository contents
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Install ILSpy CLI
+        run: dotnet tool install --global ilspycmd
+
+      - name: Add .NET tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+      - name: Decompile Sonic 3 HD
+        run: |
+          mkdir -p src
+          ilspycmd \
+            -p \
+            --nested-directories \
+            -o src \
+            "original/sonic 3 hd.exe"
+
+      - name: Commit and Push Source Code
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          
+          # Add the newly created src directory
+          git add src/
+          
+          # Check if there are actual changes to commit to avoid failing the build
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: automatically decompile and update src folder"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

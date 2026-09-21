@@ -1,0 +1,45 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Sets up .NET 8, which is the foundational engine framework for modern MonoGame
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Java is strictly required by the Android SDK to compile APK application bundles
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Installs the official Microsoft Android build tools onto the cloud server
+      - name: Install .NET Android Workload
+        run: dotnet workload install android
+
+      # Restores NuGet packages (MonoGame mobile libraries) mapped inside your .csproj file
+      - name: Restore Dependencies
+        run: dotnet restore src/Sonic3HDAndroid.csproj
+
+      # Compiles the game logic and packages the assets into a debug APK configuration
+      - name: Compile Android APK
+        run: |
+          dotnet build src/Sonic3HDAndroid.csproj -c Release -f net8.0-android
+
+      # Uploads the finished APK to GitHub so you can download it directly from Safari
+      - name: Upload Finished APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sonic3HD-Android-Debug-Build
+          path: src/bin/Release/net8.0-android/*-Signed.apk

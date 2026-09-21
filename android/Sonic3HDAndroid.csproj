@@ -30,7 +30,7 @@
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
 
     <!-- Modern MonoGame Engine Backend for Android -->
-    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.1.*" />
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.*" />
   </ItemGroup>
 
   <ItemGroup>

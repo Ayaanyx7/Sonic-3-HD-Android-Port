@@ -19,14 +19,9 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      # Build de4dot manually to guarantee it runs flawlessly on Linux
-      - name: Build de4dot from Source
-        run: |
-          git clone --recursive https://github.com/de4dot/de4dot
-          cd de4dot
-          dotnet build -c Release
-          echo "$(pwd)/de4dot.Console/bin/Release/net8.0" >> "$GITHUB_PATH"
-          cd ..
+      # Fix: Install a modernized fork of de4dot directly via dotnet tool
+      - name: Install de4dot
+        run: dotnet tool install --global de4dot.tool
 
       - name: Install ILSpy CLI
         run: dotnet tool install --global ilspycmd

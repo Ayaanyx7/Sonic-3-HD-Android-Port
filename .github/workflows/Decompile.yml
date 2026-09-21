@@ -17,11 +17,16 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x' # Using .NET 8 as it has broader global tool compatibility
+          dotnet-version: '8.x'
 
-      # Install a deobfuscator tool
-      - name: Install de4dot
-        run: dotnet tool install --global de4dot
+      # Build de4dot manually to guarantee it runs flawlessly on Linux
+      - name: Build de4dot from Source
+        run: |
+          git clone --recursive https://github.com
+          cd de4dot
+          dotnet build -c Release
+          echo "$(pwd)/de4dot.Console/bin/Release/net8.0" >> "$GITHUB_PATH"
+          cd ..
 
       - name: Install ILSpy CLI
         run: dotnet tool install --global ilspycmd
@@ -29,10 +34,10 @@ jobs:
       - name: Add .NET tools to PATH
         run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
 
+      # Handled spaces inside "Sonic 3 HD Tech Demo.exe" correctly with double quotes
       - name: Deobfuscate Executable
         run: |
           mkdir -p cleaned
-          # de4dot will analyze the file, unpack it, and rename bad characters to "Class0", "Method0", etc.
           de4dot "original/Sonic 3 HD Tech Demo.exe" -o "cleaned/sonic3hd_clean.exe"
 
       - name: Decompile Sonic 3 HD
@@ -47,7 +52,7 @@ jobs:
       - name: Commit and Push Source Code
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add src/
           

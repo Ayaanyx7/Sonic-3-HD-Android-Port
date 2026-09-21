@@ -7,7 +7,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     
-    <!-- FIX 1: Prevents duplicate assembly metadata property conflicts -->
+    <!-- Prevents duplicate assembly metadata property conflicts -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     
     <AssemblyName>Sonic3HD</AssemblyName>
@@ -22,13 +22,10 @@
     <!-- Grab absolutely everything inside your decompiled src path -->
     <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
     
-    <!-- FIX 2: Exclude the compiler module token files -->
+    <!-- Exclude the compiler module token files -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
     
-    <!-- FIX 3: Exclude broken Windows Forms dependencies -->
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/GClass25.cs" />
-    
-    <!-- FIX 4: Exclude illegal explicit MulticastDelegate classes -->
+    <!-- Exclude illegal explicit MulticastDelegate classes -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
 
     <!-- Modern MonoGame Engine Backend for Android -->
@@ -37,7 +34,6 @@
 
   <ItemGroup>
     <!-- Map the assets explicitly from the target directory tree -->
-    <AndroidAsset Include="src/Content/**/*" />
     <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
   </ItemGroup>
 </Project>

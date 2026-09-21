@@ -17,7 +17,6 @@ public class GClass25 : Game
 		this.graphicsDeviceManager_0 = new GraphicsDeviceManager(this);
 		base.Content.RootDirectory = "Content";
 		
-		// Locked to mobile rendering dimensions out-of-the-box
 		this.int_22 = 1280;
 		this.int_23 = 720;
 		
@@ -222,7 +221,7 @@ public class GClass25 : Game
 		GClass31.smethod_1();
 	}
 
-	// Token: 0x060000Camp RID: 201 RVA: 0x00008924 File Offset: 0x00006B24
+	// Token: 0x060000C9 RID: 201 RVA: 0x00008924 File Offset: 0x00006B24
 	protected override void Initialize()
 	{
 		base.Initialize();
@@ -258,7 +257,7 @@ public class GClass25 : Game
 		}
 		if (base.IsActive)
 		{
-			// FIXED: Bypassed WinForms Desktop Minimisation Focus Tracking Loops for Mobile Runtimes
+			// Fixed mobile focus hook assignment block
 			this.method_0();
 			this.gclass28_0.method_3();
 			base.Update(gameTime_0);
@@ -299,9 +298,40 @@ public class GClass25 : Game
 		}
 	}
 
+	// RESTORED DECOMPILED STRUCT FIELDS
+	private GraphicsDeviceManager graphicsDeviceManager_0;
+	public SpriteBatch spriteBatch_0;
+	public GClass28 gclass28_0;
+	public int int_0;
+	public int int_1;
+	public int int_2;
+	public int int_3;
+	public int int_4;
+	public int int_5;
+	public int int_6;
+	public int int_7;
+	public int int_8;
+	public int int_9;
+	public int int_10;
+	public int int_11;
+	public int int_12;
+	public int int_13;
+	public int int_14;
+	public int int_15;
+	public int int_16;
+	public int int_17;
+	public int int_18;
+	public int int_19;
+	public int int_20;
+	public int int_21;
 	private int int_22;
 	private int int_23;
 	private bool bool_2 = false;
+	public bool bool_1 = false; // Restored matching variable field
+	public RenderTarget2D renderTarget2D_0;
+	public static Stopwatch stopwatch_0 = new Stopwatch(); // Restored diagnostic clock tracker
+	public KeyboardState keyboardState_0;
+	public static Texture2D texture2D_0; // Restored core texture lookup pointers
 	public static Texture2D texture2D_1;
 	public static Texture2D texture2D_2;
 	public static Texture2D texture2D_3;

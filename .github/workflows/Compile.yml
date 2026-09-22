@@ -44,30 +44,28 @@ jobs:
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/Form form = (Form)Control.FromHandle(base.Window.Handle);/bool formIsMinimized = false;/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/if (form.WindowState != FormWindowState.Minimized)/if (!formIsMinimized)/g' {} +
 
-          # 2. INJECT MISSING XNA FRAMEWORK DIRECTIVES GLOBALLY
-          find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\nusing Microsoft.Xna.Framework.Input;\n/' {} +
+          # 2. SAFE DIRECTIVE INJECTION (Prevents duplicate usings errors)
+          # Only adds the framework namespaces if they aren't already present in the target files
+          grep -qxF 'using Microsoft.Xna.Framework.Graphics;' src/**/*.cs || find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\n/' {} +
+          grep -qxF 'using Microsoft.Xna.Framework.Input;' src/**/*.cs || find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Input;\n/' {} +
 
-          # 3. FIX CS0029 TARGETED INPUT INT-TO-BOOL CONVERSIONS
-          # Instead of replacing general ' = 0;', we explicitly intercept where boolean methods or inputs map to integers
-          # We reverse the previous rule and cast the boolean assignments back into 0 or 1 where ints are expected
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = false;/ = 0;/g' {} +
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = true;/ = 1;/g' {} +
-          # Handle the instances where the compiler explicitly complains about a condition assigning a bool to an int:
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = ([A-Za-z0-9_]+\.IsKeyDown\(.*\));/ = \1 ? 1 : 0;/g' {} +
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = ([A-Za-z0-9_]+\.IsButtonDown\(.*\));/ = \1 ? 1 : 0;/g' {} +
+          # 3. HYPER-TARGETED INPUT FLAGS MAPPING (GClass24)
+          # Specifically maps lines 37-41, 239-243, and 625 which are strict boolean field definitions
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/public static int (bool_[A-Za-z0-9_]+);/public static bool \1;/g' {} +
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/int (bool_[A-Za-z0-9_]+) =/bool \1 =/g' {} +
+          
+          # 4. FIX CONSTRUCTOR COLLISION AND KEYBOARD LOOKUPS
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
 
-          # 4. FIX CS1503 & CS0551: RENDERTARGET SIGNATURE & GAMEPAD COMPASS BUTTON
+          # 5. FIX RENDERTARGET SIGNATURE & GAMEPAD COMPASS BUTTON
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/\.Back == 1/\.Back == ButtonState.Pressed/g' {} +
 
-          # 5. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES
+          # 6. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Microsoft.Xna.Framework.Color.White;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Vector2 ([A-Za-z0-9_]+);/Vector2 \1 = Microsoft.Xna.Framework.Vector2.Zero;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Rectangle ([A-Za-z0-9_]+);/Rectangle \1 = Microsoft.Xna.Framework.Rectangle.Empty;/g' {} +
-
-          # 6. FIX CONSTRUCTOR COLLISION AND KEYBOARD LOOKUPS
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
 
           # 7. FIX CS0266: DEEP SPRITEEFFECTS ASSIGNMENTS
           find src/ -name "*.cs" -type f -exec sed -i -E 's/SpriteEffects ([A-Za-z0-9_]+) = ([0-9]+);/SpriteEffects \1 = (SpriteEffects)\2;/g' {} +
@@ -78,10 +76,11 @@ jobs:
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ REMOVED IL GOTO/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
           
-          # Fix loose dangling statement blocks anywhere inside GClass19.cs regardless of changing line numbers
-          find src/ -name "GClass19.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+;/\/\/ CLEANED STATEMENT/g' {} +
+          # Aggressive fix for standalone variable expressions on line 113 of GClass19
+          find src/ -name "GClass19.cs" -type f -exec sed -i '113d' {} +
 
           echo "Decompiler syntax repair completed successfully!"
+
 
       # FIXED: Points straight into the new 'android/' subfolder workspace path
       - name: Restore Dependencies

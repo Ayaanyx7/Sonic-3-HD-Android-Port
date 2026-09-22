@@ -37,33 +37,34 @@ jobs:
             # NEW: Automatically sweeps and rewrites the broken decompiler structures globally
       - name: Decompiler Syntax Code Patching
         run: |
-          echo "Repairing deep decompiler structure issues..."
+          echo "Executing hyper-targeted code syntax cleanup..."
           
-          # 1. FIX FOR WINDOWS FORMS (GClass25 desktop cleanup)
+          # 1. FIX DESKTOP WINDOWS FORMS (GClass25)
           find src/ -name "GClass25.cs" -type f -exec sed -i '/using System.Windows.Forms;/d' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/Form form = (Form)Control.FromHandle(base.Window.Handle);/bool formIsMinimized = false;/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/if (form.WindowState != FormWindowState.Minimized)/if (!formIsMinimized)/g' {} +
 
-          # 2. FIX CS0165: Unassigned local variables (white, color, etc.)
+          # 2. INJECT MISSING XNA GRAPHICS DIRECTIVES GLOBALLY
+          # This guarantees every file can natively see 'SpriteEffects'
+          find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\n/' {} +
+
+          # 3. FIX CS0165 & C# 5.0 RANGE INDEXER COLLISION
+          # Replaces broken 'variable..ctor' patterns without triggering modern C# 8.0 range features
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Color.White;/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(([^)]+)\);/\1 = new Color(\2);/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(\);/\1 = new Color();/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(([^)]+)\);/\1 = new Microsoft.Xna.Framework.Color(\2);/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+)\.\.ctor\(\);/\1 = new Microsoft.Xna.Framework.Color();/g' {} +
 
-          # 3. FIX CS0266 & CS1503: SpriteEffects Type Conversions Mismatches
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/([ (])(0|1|2|3|4)([ ,)])/\1(SpriteEffects)\2\3/g' {} +
+          # 4. TARGETED SPRITEEFFECTS CASTING (Safe and contextual)
+          # Only casts variables explicitly named or explicitly explicitly typed to prevent breaking numbers
           find src/ -name "*.cs" -type f -exec sed -i -E 's/SpriteEffects ([A-Za-z0-9_]+) = ([0-9]+);/SpriteEffects \1 = (SpriteEffects)\2;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/ = ([0-9]+) \? SpriteEffects\.None/ = (SpriteEffects)\1 \? SpriteEffects.None/g' {} +
 
-          # 4. FIX CS0159 & CS0201: Wiping broken compiler statements & raw IL flags cleanly
+          # 5. WIPE DECOMPILER DEAD CODE & BROKEN LABELS
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ REMOVED IL GOTO/g' {} +
-          
-          # FIXED: Safely erases raw decompiler labels (e.g. IL_00a1:) without adding illegal backslashes
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
-          
-          # Fix loose standalone statements (like line 111 in GClass19)
           find src/ -name "GClass19.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+;/\/\/ CLEANED STATEMENT/g' {} +
 
           echo "Decompiler syntax repair completed successfully!"
-
 
       # FIXED: Points straight into the new 'android/' subfolder workspace path
       - name: Restore Dependencies

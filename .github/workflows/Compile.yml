@@ -37,32 +37,37 @@ jobs:
             # NEW: Automatically sweeps and rewrites the broken decompiler structures globally
       - name: Decompiler Syntax Code Patching
         run: |
-          echo "Executing precise code syntax cleanup..."
+          echo "Executing hyper-targeted code syntax cleanup..."
           
           # 1. FIX DESKTOP WINDOWS FORMS (GClass25)
           find src/ -name "GClass25.cs" -type f -exec sed -i '/using System.Windows.Forms;/d' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/Form form = (Form)Control.FromHandle(base.Window.Handle);/bool formIsMinimized = false;/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/if (form.WindowState != FormWindowState.Minimized)/if (!formIsMinimized)/g' {} +
 
-          # 2. INJECT MISSING XNA GRAPHICS DIRECTIVES GLOBALLY
-          find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\n/' {} +
+          # 2. INJECT MISSING XNA GRAPHICS & INPUT DIRECTIVES GLOBALLY
+          # Adding Microsoft.Xna.Framework.Input ensures Keys enum resolves cleanly everywhere
+          find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\nusing Microsoft.Xna.Framework.Input;\n/' {} +
 
-          # 3. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES TO PREVENT BUILD CRASHES
+          # 3. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Microsoft.Xna.Framework.Color.White;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Vector2 ([A-Za-z0-9_]+);/Vector2 \1 = Microsoft.Xna.Framework.Vector2.Zero;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Rectangle ([A-Za-z0-9_]+);/Rectangle \1 = Microsoft.Xna.Framework.Rectangle.Empty;/g' {} +
 
-          # 4. FIX CONSTRUCTOR COLLISION (Wipe range operator fallback issue completely)
-          # Instead of replacing with "new Color", we comment out the invalid explicit structural ..ctor statement tokens entirely
+          # 4. FIX CONSTRUCTOR COLLISION
           find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
 
-          # 5. TARGETED SPRITEEFFECTS CASTING
-          # Resolves remaining explicit signature casting errors safely
+          # 5. FIX CS1503: KEYBOARD STATE INTEGER-TO-ENUM MISMATCH
+          # Safely wraps raw numeric inputs inside keyboard lookups to use explicit (Keys) casting
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
+
+          # 6. FIX CS0266: DEEP SPRITEEFFECTS ASSIGNMENTS
+          # Forces explicit casting when assigning raw integers or conditions directly to a SpriteEffects variable
           find src/ -name "*.cs" -type f -exec sed -i -E 's/SpriteEffects ([A-Za-z0-9_]+) = ([0-9]+);/SpriteEffects \1 = (SpriteEffects)\2;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/ = ([0-9]+) \? SpriteEffects\.None/ = (SpriteEffects)\1 \? SpriteEffects.None/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/DrawingCalls\(([^,]+), ([0-9]+),/DrawingCalls\1, (SpriteEffects)\2,/g' {} +
 
-          # 6. WIPE DECOMPILER DEAD CODE & BROKEN LABELS
+          # 7. WIPE DECOMPILER DEAD CODE & BROKEN LABELS
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ REMOVED IL GOTO/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
           find src/ -name "GClass19.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+;/\/\/ CLEANED STATEMENT/g' {} +

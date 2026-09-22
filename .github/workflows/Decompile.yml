@@ -19,7 +19,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y mono-devel mono-runtime unzip
-
       # Fetches the original .NET Framework build of dnSpy (Crucial for flawless Mono execution)
       - name: Fetch dnSpy Engine Bundle
         uses: suisei-cn/actions-download-file@v1.6.0
@@ -32,7 +31,6 @@ jobs:
         run: |
           mkdir -p dnspy_bin
           unzip dnspy.zip -d dnspy_bin
-
       # Downloads the exact deobfuscator engine specified
       - name: Fetch De4dot Binary Bundle
         uses: suisei-cn/actions-download-file@v1.6.0
@@ -45,23 +43,36 @@ jobs:
         run: |
           mkdir -p de4dot_bin
           unzip de4dot.zip -d de4dot_bin
-
       # Deobfuscates the executable using Mono before decompilation
       - name: Deobfuscate Executable
         run: |
           mkdir -p cleaned
           mono de4dot_bin/de4dot.exe "original/Sonic 3 HD Tech Demo.exe" -o "cleaned/sonic3hd_clean.exe"
 
+      - name: Configure dnSpy Settings for C# 5.0
+        run: |
+          cat << 'EOF' > dnspy_bin/dnSpy.xml
+          <namespaces>
+            <namespace name="dnSpy.Contracts.Decompiler">
+              <section name="Settings">
+                <setting name="Language">C#</setting>
+              </section>
+            </namespace>
+            <namespace name="dnSpy.Decompiler.CSharp">
+              <section name="Settings">
+                <setting name="Version">CSharp5</setting>
+              </section>
+            </namespace>
+          </namespaces>
+          EOF
+          
       # RUNS DNSPY: Converts the assembly straight into clean, error-free C# files
       - name: Decompile Sonic 3 HD via dnSpy
         run: |
           mkdir -p src
           mono dnspy_bin/dnSpy.Console.exe \
             -o src \
-            -l csharp \
-            --lang-version csharp5 \
             "cleaned/sonic3hd_clean.exe"
-
       # Commits the cleanly compiled source tree back to your repository branch
       - name: Commit and Push Source Code
         run: |

@@ -3,10 +3,15 @@
     <!-- Target modern Android via .NET 8 -->
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
-    <OutputType>Exe</OutputType>
+    
+    <!-- CRITICAL: Must be Library for Android, NOT Exe -->
+    <OutputType>Library</OutputType>
+    
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <LangVersion>7.3</LangVersion> 
+    
+    <!-- Matches your C# 5.0 dnSpy extraction baseline perfectly -->
+    <LangVersion>5.0</LangVersion> 
     
     <!-- Prevents duplicate assembly metadata property conflicts -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -23,8 +28,9 @@
     <!-- Grab absolutely everything inside your decompiled src path -->
     <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
     
-    <!-- Exclude the compiler module token files -->
+    <!-- FIX: Corrected the XML brackets for the module token files -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
     
     <!-- Exclude illegal explicit MulticastDelegate classes -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />

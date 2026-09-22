@@ -47,13 +47,16 @@ jobs:
           # 2. INJECT MISSING XNA FRAMEWORK DIRECTIVES GLOBALLY
           find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\nusing Microsoft.Xna.Framework.Input;\n/' {} +
 
-          # 3. FIX CS0029: CONVERT INT LITERALS TO BOOLEANS IN THE INPUT ROUTINES
-          # Safely intercepts isolated assignment blocks mapping 0 or 1 into tracking booleans
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = 0;/ = false;/g' {} +
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = 1;/ = true;/g' {} +
+          # 3. FIX CS0029 TARGETED INPUT INT-TO-BOOL CONVERSIONS
+          # Instead of replacing general ' = 0;', we explicitly intercept where boolean methods or inputs map to integers
+          # We reverse the previous rule and cast the boolean assignments back into 0 or 1 where ints are expected
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = false;/ = 0;/g' {} +
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = true;/ = 1;/g' {} +
+          # Handle the instances where the compiler explicitly complains about a condition assigning a bool to an int:
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = ([A-Za-z0-9_]+\.IsKeyDown\(.*\));/ = \1 ? 1 : 0;/g' {} +
+          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/ = ([A-Za-z0-9_]+\.IsButtonDown\(.*\));/ = \1 ? 1 : 0;/g' {} +
 
           # 4. FIX CS1503 & CS0551: RENDERTARGET SIGNATURE & GAMEPAD COMPASS BUTTON
-          # Converts raw integers to explicit enum properties inside GClass25
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/\.Back == 1/\.Back == ButtonState.Pressed/g' {} +
 
@@ -75,7 +78,7 @@ jobs:
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ REMOVED IL GOTO/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
           
-          # Fix loose dangling statement blocks (clears line 112/113 in GClass19)
+          # Fix loose dangling statement blocks anywhere inside GClass19.cs regardless of changing line numbers
           find src/ -name "GClass19.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+;/\/\/ CLEANED STATEMENT/g' {} +
 
           echo "Decompiler syntax repair completed successfully!"

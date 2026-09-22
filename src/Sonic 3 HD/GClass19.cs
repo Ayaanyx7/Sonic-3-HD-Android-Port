@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -23,11 +23,11 @@ public class GClass19 : GClass0
 			GClass0.texture2D_0 = GClass19.texture2D_1[1];
 			if (!this.bool_0)
 			{
-				GClass0.spriteEffects_0 = 1;
+				GClass0.spriteEffects_0 = (SpriteEffects)1;
 			}
 			else
 			{
-				GClass0.spriteEffects_0 = 0;
+				GClass0.spriteEffects_0 = (SpriteEffects)0;
 			}
 			int num = this.int_2 % 190;
 			if (0 >= num || num >= 70)
@@ -44,7 +44,7 @@ public class GClass19 : GClass0
 				{
 					base.method_0(vector2_1 + new Vector2(0f, (float)(GClass0.texture2D_0.Height * (num - 160)) / 30f), float_1);
 				}
-				GClass0.spriteEffects_0 = 0;
+				GClass0.spriteEffects_0 = (SpriteEffects)0;
 			}
 		}
 	}
@@ -68,7 +68,7 @@ public class GClass19 : GClass0
 					base.method_0(vector2_1 + new Vector2(0f, -104f), float_1);
 				}
 			}
-			GClass0.spriteEffects_0 = 0;
+			GClass0.spriteEffects_0 = (SpriteEffects)0;
 		}
 	}
 
@@ -101,14 +101,16 @@ public class GClass19 : GClass0
 	// Token: 0x060000B2 RID: 178 RVA: 0x00006E38 File Offset: 0x00005038
 	public override bool vmethod_0(GClass22 gclass22_0)
 	{
-		bool result;
+		bool result = false;
 		if (this.bool_4)
 		{
 			result = false;
 		}
 		else
 		{
-			gclass22_0.vector2_0 - (this.vector2_0 + new Vector2(0f, 80f));
+			// FIXED BY HAND: Commented out the loose statement text block artifact left by the decompiler engine
+			// var deadVector = gclass22_0.vector2_0 - (this.vector2_0 + new Vector2(0f, 80f));
+			
 			if (gclass22_0.vector2_0.X > this.vector2_0.X)
 			{
 				this.bool_0 = true;
@@ -124,7 +126,7 @@ public class GClass19 : GClass0
 			}
 			else
 			{
-				float num2;
+				float num2 = 0f;
 				if (70 <= num && num <= 100)
 				{
 					num2 = (float)(GClass0.texture2D_0.Height * (100 - num)) / 30f;

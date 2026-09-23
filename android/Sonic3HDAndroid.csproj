@@ -4,6 +4,10 @@
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     
+    <!-- CRITICAL FIX: Forces .NET 8 to package the project into a physical installable APK -->
+    <RuntimeIdentifiers>android-arm64;android-x86_64</RuntimeIdentifiers>
+    <AndroidPackageFormats>apk</AndroidPackageFormats>
+    
     <!-- CRITICAL: Must be Library for Android, NOT Exe -->
     <OutputType>Library</OutputType>
     

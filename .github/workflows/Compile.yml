@@ -87,9 +87,9 @@ jobs:
         run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
       # FIXED: Compiles out of the 'android/' workspace directory path
-      - name: Compile Android APK
+      - name: Compile and Package Android APK
         run: |
-          dotnet build android/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
+          dotnet publish android/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
 
       # FIXED: Captures the final -aligned.apk bundle generated out of the target subfolder directory
       - name: Upload Finished APK Artifact

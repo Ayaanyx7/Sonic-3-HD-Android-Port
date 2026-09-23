@@ -28,3 +28,24 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Grab absolutely everything inside your decompiled src path -->
+    <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
+    
+    <!-- FIX: Corrected the XML brackets for the module token files -->
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
+    
+    <!-- Exclude illegal explicit MulticastDelegate classes -->
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
+
+    <!-- Modern MonoGame Engine Backend for Android -->
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Map the assets explicitly from the target directory tree -->
+    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
+  </ItemGroup>
+</Project>

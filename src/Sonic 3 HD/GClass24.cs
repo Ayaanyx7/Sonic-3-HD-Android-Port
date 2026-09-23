@@ -194,7 +194,6 @@ public class GClass24
 				this.int_0[161] = 9;
 				this.int_0[163] = 98;
 				this.int_0[164] = 4;
-				
 				bool[] array = this.bool_0;
 				int num2 = 0;
 				bool[] array2 = this.bool_0;
@@ -235,8 +234,6 @@ public class GClass24
 				int num20 = 72;
 				bool[] array20 = this.bool_0;
 				int num21 = 79;
-				
-				// FIXED: Converted explicit decompiler int metrics to true booleans
 				this.bool_0[80] = true;
 				array20[num21] = true;
 				array19[num20] = true;
@@ -258,7 +255,6 @@ public class GClass24
 				array3[num4] = true;
 				array2[num3] = true;
 				array[num2] = true;
-				
 				bool[] array21 = this.bool_1;
 				int num22 = 51;
 				bool[] array22 = this.bool_1;
@@ -278,7 +274,6 @@ public class GClass24
 				array23[num24] = true;
 				array22[num23] = true;
 				array21[num22] = true;
-				
 				bool[] array27 = this.bool_2;
 				int num28 = 70;
 				bool[] array28 = this.bool_2;
@@ -288,7 +283,6 @@ public class GClass24
 				array27[num28] = true;
 			}
 		}
-		
 		Thread thread = new Thread(new ThreadStart(this.method_3));
 		thread.Start();
 		if (this.string_0 == "MHZ1")
@@ -315,7 +309,7 @@ public class GClass24
 		{
 			for (int i = 0; i < this.int_1; i++)
 			{
-				this.texture2D_0[i] = GClass25.gclass25_0.Content.Load<Texture2D>(string.Concat(new object[]
+				this.texture2D_0[i] = GClass24.gclass25_0.Content.Load<Texture2D>(string.Concat(new object[]
 				{
 					"levels/",
 					this.string_0,
@@ -324,26 +318,263 @@ public class GClass24
 				}));
 			}
 		}
+		this.texture2D_1 = GClass24.gclass25_0.Content.Load<Texture2D>("levels/" + this.string_0 + "/background");
+		for (int i = 0; i < this.texture2D_2.Length; i++)
+		{
+			this.texture2D_2[i] = GClass24.gclass25_0.Content.Load<Texture2D>(string.Concat(new object[]
+			{
+				"levels/",
+				this.string_0,
+				"/backgroundTile",
+				i
+			}));
+		}
+		if (thread.IsAlive)
+		{
+			thread.Join();
+		}
+		this.int_2 = new int[this.int_6, this.int_5];
+		for (int j = 0; j < this.int_6; j++)
+		{
+			for (int i = 0; i < this.int_5; i++)
+			{
+				num++;
+				this.int_2[j, i] = 0 % this.int_1;
+				if (i > 140 || j > 135)
+				{
+					this.int_2[j, i] = 0;
+				}
+			}
+		}
+		this.int_3 = new int[this.int_6, this.int_5];
+		for (int j = 0; j < this.int_6; j++)
+		{
+			for (int i = 0; i < this.int_5; i++)
+			{
+				this.int_3[j, i] = 0;
+			}
+		}
+		this.gclass0_0 = new GClass0[50];
+		this.method_0();
 	}
 
-	public void method_3() {}
-	public void method_5() {}
+	private void method_2()
+	{
+		FileStream fileStream = new FileStream("Content/levels/masks", FileMode.Create);
+		BinaryWriter binaryWriter = new BinaryWriter(fileStream);
+		uint num = 0U;
+		for (int i = 0; i < GClass24.gclass23_0.Length; i++)
+		{
+			for (int j = 0; j < 512; j++)
+			{
+				for (int k = 0; k < 512; k++)
+				{
+					if (GClass24.gclass23_0[i].bool_0[j, k])
+					{
+						num += 2147483648U;
+					}
+					if (k % 32 == 31)
+					{
+						binaryWriter.Write(num);
+						num = 0U;
+					}
+					else
+					{
+						num /= 2U;
+					}
+				}
+			}
+		}
+		binaryWriter.Close();
+		fileStream.Close();
+	}
+
+	private void method_3()
+	{
+		if (!GClass24.bool_3)
+		{
+			GClass24.bool_3 = true;
+			GClass29.song_0 = GClass25.gclass25_0.Content.Load<Song>("audio/mushroomHill");
+			GClass29.song_4 = GClass25.gclass25_0.Content.Load<Song>("audio/ending");
+			GClass29.song_3 = GClass25.gclass25_0.Content.Load<Song>("audio/hiddenPalaceZone");
+			GClass29.song_1 = GClass25.gclass25_0.Content.Load<Song>("audio/mushroomHillFast");
+			Stream stream = TitleContainer.OpenStream("Content/levels/masks");
+			BinaryReader binaryReader = new BinaryReader(stream);
+			uint num = 0U;
+			for (int i = 0; i < GClass24.gclass23_0.Length; i++)
+			{
+				GClass24.gclass23_0[i] = new GClass23();
+				for (int j = 0; j < 512; j++)
+				{
+					for (int k = 0; k < 512; k++)
+					{
+						if (k % 32 == 0)
+						{
+							num = binaryReader.ReadUInt32();
+						}
+						if (num % 2U == 1U)
+						{
+							GClass24.gclass23_0[i].bool_0[j, k] = true;
+						}
+						else
+						{
+							GClass24.gclass23_0[i].bool_0[j, k] = false;
+						}
+						num /= 2U;
+					}
+				}
+			}
+			binaryReader.Close();
+			stream.Close();
+		}
+	}
+
+	private void method_4()
+	{
+		Color[] array = new Color[512 * 512];
+		for (int i = 0; i < GClass24.texture2D_3.Length; i++)
+		{
+			GClass24.texture2D_3[i] = GClass24.gclass25_0.Content.Load<Texture2D>("levels//collisionMasks/" + i);
+			GClass24.gclass23_0[i] = new GClass23();
+			GClass24.texture2D_3[i].GetData<Color>(array);
+			for (int j = 0; j < 512; j++)
+			{
+				for (int k = 0; k < 512; k++)
+				{
+					if (array[j * 512 + k].A > 120)
+					{
+						GClass24.gclass23_0[i].bool_0[j, k] = true;
+					}
+					else
+					{
+						GClass24.gclass23_0[i].bool_0[j, k] = false;
+					}
+				}
+			}
+			GClass24.texture2D_3[i].Dispose();
+		}
+	}
+
+	public void method_5()
+	{
+		Stream stream = TitleContainer.OpenStream("Content/levels/" + this.string_0 + "/" + this.string_1);
+		BinaryReader binaryReader = new BinaryReader(stream);
+		this.int_5 = binaryReader.ReadInt32();
+		this.int_6 = binaryReader.ReadInt32();
+		this.int_3 = new int[this.int_6, this.int_5];
+		for (int i = 0; i < this.int_6; i++)
+		{
+			for (int j = 0; j < this.int_5; j++)
+			{
+				this.int_2[i, j] = (int)binaryReader.ReadInt16();
+			}
+		}
+		for (int i = 0; i < this.int_6; i++)
+		{
+			for (j = 0; j < this.int_5; j++)
+			{
+				this.int_3[i, j] = (int)binaryReader.ReadInt16();
+			}
+		}
+		this.int_4 = binaryReader.ReadInt32();
+		for (int j = 0; j < this.int_4; j++)
+		{
+			int num = (int)binaryReader.ReadByte();
+			this.gclass0_0[j] = (GClass0)Activator.CreateInstance(GClass29.gclass0_0[num].GetType());
+			this.gclass0_0[j].int_1 = (int)binaryReader.ReadByte();
+			this.gclass0_0[j].vector2_0.X = binaryReader.ReadSingle();
+			this.gclass0_0[j].vector2_0.Y = binaryReader.ReadSingle();
+		}
+		binaryReader.Close();
+		stream.Close();
+		this.int_5 = 192;
+		GClass29.float_4 = 0f;
+	}
+
+	public void method_6()
+	{
+		FileStream fileStream = new FileStream("Content/levels/" + this.string_0 + "/" + this.string_1, FileMode.Create);
+		BinaryWriter binaryWriter = new BinaryWriter(fileStream);
+		this.int_5 = 192;
+		binaryWriter.Write(this.int_5);
+		binaryWriter.Write(this.int_6);
+		int j;
+		for (int i = 0; i < this.int_6; i++)
+		{
+			for (j = 0; j < this.int_5; j++)
+			{
+				binaryWriter.Write((short)this.int_2[i, j]);
+			}
+		}
+		for (int i = 0; i < this.int_6; i++)
+		{
+			for (j = 0; j < this.int_5; j++)
+			{
+				binaryWriter.Write((short)this.int_3[i, j]);
+			}
+		}
+		for (int i = 0; i < this.gclass0_0.Length - 1; i++)
+		{
+			for (j = 0; j < this.gclass0_0.Length - 1; j++)
+			{
+				if (this.gclass0_0[j] == null)
+				{
+					this.gclass0_0[j] = this.gclass0_0[j + 1];
+					this.gclass0_0[j + 1] = null;
+				}
+			}
+		}
+		int num = 0;
+		j = 0;
+		while (j < this.gclass0_0.Length && this.gclass0_0[j] != null)
+		{
+			num++;
+			j++;
+		}
+		this.int_4 = num;
+		binaryWriter.Write(this.int_4);
+		j = 0;
+		IL_1F9:
+		while (j < this.int_4)
+		{
+			for (int i = 0; i < GClass29.gclass0_0.Length; i++)
+			{
+				if (GClass29.gclass0_0[i] != null && this.gclass0_0[j].GetType() == GClass29.gclass0_0[i].GetType())
+				{
+					binaryWriter.Write((byte)i);
+					IL_1B1:
+					binaryWriter.Write((byte)this.gclass0_0[j].int_1);
+					binaryWriter.Write(this.gclass0_0[j].vector2_0.X);
+					binaryWriter.Write(this.gclass0_0[j].vector2_0.Y);
+					j++;
+					goto IL_1F9;
+				}
+			}
+			goto IL_1B1;
+		}
+		binaryWriter.Close();
+		fileStream.Close();
+	}
 
 	// Fields
-	public string string_0;
-	public string string_1;
-	public int int_1;
-	public int int_5;
-	public int int_6;
-	public int[] int_0;
 	public Texture2D[] texture2D_0;
+	public Texture2D texture2D_1;
 	public Texture2D[] texture2D_2;
+	public static Texture2D[] texture2D_3;
+	public static GClass23[] gclass23_0;
+	public int[] int_0;
 	public bool[] bool_0;
 	public bool[] bool_1;
 	public bool[] bool_2;
-
-	public static Texture2D[] texture2D_3;
-	public static GClass23[] gclass23_0;
-	public static bool bool_3 = false;
+	public int int_1 = 144;
+	public int[,] int_2;
+	public int[,] int_3;
+	public GClass0[] gclass0_0;
+	public string string_0;
 	public static GClass25 gclass25_0;
+	private int int_4 = 0;
+	public string string_1;
+	public int int_5;
+	public int int_6;
+	private static bool bool_3 = false;
 }

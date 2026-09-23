@@ -94,6 +94,7 @@ jobs:
             -r android-arm64 \
             -p:CheckEolTargetFramework=false \
             -p:CreatePackagePerAbi=true \
+            -p:AndroidPackageFormat=apk \
             -p:AndroidBuildApplicationPackage=true
 
       # Deep sweeps the entire repository folder structure to find the newly compiled game file

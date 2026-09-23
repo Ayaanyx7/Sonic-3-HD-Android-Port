@@ -42,18 +42,15 @@ jobs:
           dotnet tool install -g dotnet-mgcb
           dotnet tool install -g dotnet-mgcb-editor
 
-      # Unpacks the 2012 Windows XNB files to raw files, maps them, and builds Android XNBs
+      # Unpacks the 2012 Windows XNB files to raw files, maps them, and builds Android XNBs via .NET native tools
       - name: Automated XNB Extraction and Mobile Rebuild Pipeline
         run: |
-          # 1. Install Node.js dependencies for xnbcli extractor
-          git clone https://github.com/leonblade/xnbcli extractor
-          cd extractor
-          npm install
-          cd ..
-
-          # 2. Extract the legacy 2012 files to raw assets using the correct entry file
+          # 1. Install a pure C# native XNB Unpacker tool (No Node.js/node-gyp dependency issues)
+          dotnet tool install --global XnbUnpacker --version 1.0.3 || true
+          
+          # 2. Extract the legacy 2012 files to raw assets
           mkdir -p raw_content
-          node extractor/xnbcli.js unpack src/Content raw_content
+          xnbunpacker unpack src/Content raw_content
           
           # 3. Create a clean destination and write the base MGCB configuration file
           mkdir -p android_content
@@ -99,7 +96,7 @@ jobs:
                           f.write(f'/build:{build_src};{build_dest}\n')
           "
           
-          # 5. Compile everything into mobile OpenGL formatting
+          # 5. Compile everything into mobile OpenGL formatting via modern MGCB
           cd android_content
           mgcb /@:Content.mgcb
           cd ..

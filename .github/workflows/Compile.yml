@@ -42,7 +42,7 @@ jobs:
           dotnet tool install -g dotnet-mgcb
           dotnet tool install -g dotnet-mgcb-editor
 
-      # Handles ONLY the critical desktop Windows Form stubbing in GClass25 safely
+      # Handles ONLY the critical desktop Windows Form stubbing in GClass25 safely 
       - name: Decompiler Syntax Code Patching
         run: |
           echo "Repairing broken decompiler syntax patterns..."
@@ -51,17 +51,23 @@ jobs:
           find src/ -name "GClass25.cs" -type f -exec sed -i '/using System.Windows.Forms;/d' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/Form form = (Form)Control.FromHandle(base.Window.Handle);/bool formIsMinimized = false;/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/if (form.WindowState != FormWindowState.Minimized)/if (!formIsMinimized)/g' {} +
+          
+          # Fix the specific raw GamePad back-button signature and RenderTarget usage in GClass25
+          find src/ -name "GClass25.cs" -type f -exec sed -i 's/\.Back == 1/\.Back == ButtonState.Pressed/g' {} +
+          find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
 
-          # 2. Fix CS8026 Range Operator Collision & CS0165 Unassigned Variables
-          # Instead of dropping the lines, safely initialize variables and convert "..ctor" tokens cleanly
+          # 2. Fix CS1503: KEYBOARD STATE INTEGER-TO-ENUM MISMATCH
+          # Safely wraps raw numeric keyboard checks (like IsKeyDown(37)) into explicit (Keys) enums
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
+
+          # 3. Fix CS8026 Range Operator Collision & CS0165 Unassigned Variables
           find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Microsoft.Xna.Framework.Color.White;/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
 
-          # 3. Fix CS0266 SpriteEffects Assignment Casting Mismatches
-          # Targets internal fields setting raw integers directly to the drawing enums safely
+          # 4. Fix CS0266 SpriteEffects Assignment Casting Mismatches
           find src/ -name "*.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
 
-          # 4. Clean away leftover obfuscation navigation markers
+          # 5. Clean away leftover obfuscation navigation markers
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ Wiped/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
           

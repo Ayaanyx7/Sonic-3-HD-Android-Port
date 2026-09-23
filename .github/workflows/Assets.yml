@@ -41,12 +41,17 @@ jobs:
               for file in files:
                   if file.endswith('.xnb') or file.endswith('.png'):
                       rel_path = os.path.relpath(root, source_dir)
-                      dest_folder = os.path.join(target_dir, rel_path)
+                      path_parts = rel_path.split(os.sep)
+                      
+                      # Strip out the redundant 'Content' name if it was packaged inside the zip
+                      lowercase_parts = [p.lower() for p in path_parts if p and p.lower() != 'content' and p != '.']
+                      
+                      dest_folder = os.path.join(target_dir, *lowercase_parts)
                       os.makedirs(dest_folder, exist_ok=True)
-                      shutil.copy2(os.path.join(root, file), os.path.join(dest_folder, file))
-          print('Asset structures organized locally.')
+                      
+                      shutil.copy2(os.path.join(root, file), os.path.join(dest_folder, file.lower()))
+          print('Asset structures cleanly normalized and lowercased.')
           "
-
       - name: Clean Up Temporary Workspace
         run: rm -rf raw_content
 

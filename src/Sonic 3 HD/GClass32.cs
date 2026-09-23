@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -17,16 +17,16 @@ public class GClass32
 		switch (int_19)
 		{
 		case 1:
-			this.playerIndex_0 = 0;
+			this.playerIndex_0 = (PlayerIndex)0;
 			break;
 		case 2:
-			this.playerIndex_0 = 1;
+			this.playerIndex_0 = (PlayerIndex)1;
 			break;
 		case 3:
-			this.playerIndex_0 = 2;
+			this.playerIndex_0 = (PlayerIndex)2;
 			break;
 		case 4:
-			this.playerIndex_0 = 3;
+			this.playerIndex_0 = (PlayerIndex)3;
 			break;
 		}
 	}
@@ -35,20 +35,20 @@ public class GClass32
 	public void method_1()
 	{
 		GClass32.gamePadState_0 = GamePad.GetState(this.playerIndex_0);
-		this.int_0 = (GClass32.gamePadState_0.IsButtonDown(4096) ? (this.int_0 + 1) : 0);
-		this.int_1 = (GClass32.gamePadState_0.IsButtonDown(8192) ? (this.int_1 + 1) : 0);
-		this.int_2 = (GClass32.gamePadState_0.IsButtonDown(16384) ? (this.int_2 + 1) : 0);
-		this.int_3 = (GClass32.gamePadState_0.IsButtonDown(32768) ? (this.int_3 + 1) : 0);
-		this.int_4 = (GClass32.gamePadState_0.IsButtonDown(256) ? (this.int_4 + 1) : 0);
-		this.int_5 = (GClass32.gamePadState_0.IsButtonDown(512) ? (this.int_5 + 1) : 0);
-		this.int_6 = (GClass32.gamePadState_0.IsButtonDown(32) ? (this.int_6 + 1) : 0);
-		this.int_7 = (GClass32.gamePadState_0.IsButtonDown(16) ? (this.int_7 + 1) : 0);
-		this.int_8 = (GClass32.gamePadState_0.IsButtonDown(64) ? (this.int_8 + 1) : 0);
-		this.int_9 = (GClass32.gamePadState_0.IsButtonDown(128) ? (this.int_9 + 1) : 0);
-		this.int_10 = (GClass32.gamePadState_0.IsButtonDown(4) ? (this.int_10 + 1) : 0);
-		this.int_11 = (GClass32.gamePadState_0.IsButtonDown(8) ? (this.int_11 + 1) : 0);
-		this.int_12 = (GClass32.gamePadState_0.IsButtonDown(1) ? (this.int_12 + 1) : 0);
-		this.int_13 = (GClass32.gamePadState_0.IsButtonDown(2) ? (this.int_13 + 1) : 0);
+		this.int_0 = (GClass32.gamePadState_0.IsButtonDown((Buttons)4096) ? (this.int_0 + 1) : 0);
+		this.int_1 = (GClass32.gamePadState_0.IsButtonDown((Buttons)8192) ? (this.int_1 + 1) : 0);
+		this.int_2 = (GClass32.gamePadState_0.IsButtonDown((Buttons)16384) ? (this.int_2 + 1) : 0);
+		this.int_3 = (GClass32.gamePadState_0.IsButtonDown((Buttons)32768) ? (this.int_3 + 1) : 0);
+		this.int_4 = (GClass32.gamePadState_0.IsButtonDown((Buttons)256) ? (this.int_4 + 1) : 0);
+		this.int_5 = (GClass32.gamePadState_0.IsButtonDown((Buttons)512) ? (this.int_5 + 1) : 0);
+		this.int_6 = (GClass32.gamePadState_0.IsButtonDown((Buttons)32) ? (this.int_6 + 1) : 0);
+		this.int_7 = (GClass32.gamePadState_0.IsButtonDown((Buttons)16) ? (this.int_7 + 1) : 0);
+		this.int_8 = (GClass32.gamePadState_0.IsButtonDown((Buttons)64) ? (this.int_8 + 1) : 0);
+		this.int_9 = (GClass32.gamePadState_0.IsButtonDown((Buttons)128) ? (this.int_9 + 1) : 0);
+		this.int_10 = (GClass32.gamePadState_0.IsButtonDown((Buttons)4) ? (this.int_10 + 1) : 0);
+		this.int_11 = (GClass32.gamePadState_0.IsButtonDown((Buttons)8) ? (this.int_11 + 1) : 0);
+		this.int_12 = (GClass32.gamePadState_0.IsButtonDown((Buttons)1) ? (this.int_12 + 1) : 0);
+		this.int_13 = (GClass32.gamePadState_0.IsButtonDown((Buttons)2) ? (this.int_13 + 1) : 0);
 		this.float_2 = GClass32.gamePadState_0.ThumbSticks.Left.X;
 		this.float_3 = GClass32.gamePadState_0.ThumbSticks.Left.Y;
 		this.float_4 = GClass32.gamePadState_0.ThumbSticks.Right.X;

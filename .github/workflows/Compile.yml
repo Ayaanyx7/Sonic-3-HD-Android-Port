@@ -49,11 +49,11 @@ jobs:
           curl -L -o xnbcli-linux.zip https://github.com/LeonBlade/xnbcli/releases/download/v1.0.7/xnbcli-linux.zip
           mkdir -p xnbcli_bin
           unzip -o xnbcli-linux.zip -d xnbcli_bin/
-          chmod +x xnbcli_bin/xnbcli-linux
+          chmod +x xnbcli_bin/xnbcli
           
           # 2. Extract the legacy 2012 files to raw assets using the native binary execution string
           mkdir -p raw_content
-          ./xnbcli_bin/xnbcli-linux unpack src/Content raw_content
+          ./xnbcli_bin/xnbcli unpack src/Content raw_content
           
           # 3. Create a clean destination and write the base MGCB configuration file
           mkdir -p android_content

@@ -78,7 +78,17 @@ public class GClass29
 		this.texture2D_16 = this.gclass25_0.Content.Load<Texture2D>("misc/titles/act1");
 		this.texture2D_19 = this.gclass25_0.Content.Load<Texture2D>("misc/titles/zone");
 		this.texture2D_18 = this.gclass25_0.Content.Load<Texture2D>("misc/titles/mushroomHill");
-		this.method_0();
+		if (this.gclass25_0.renderTarget2D_0 != null)
+		{
+			this.method_0();
+		}
+		else
+		{
+			// Fallback initialization if the Android render canvas surface isn't built yet
+			this.gclass22_0 = new GClass22[3];
+			this.gclass22_0[0] = new GClass22("characters/Sonic");
+			this.vector2_0 = new Vector2(0f, 0f);
+		}
 		GClass29.gclass0_0 = new GClass0[100];
 		GClass29.gclass0_0[0] = new GClass1();
 		GClass29.gclass0_0[1] = new GClass3();

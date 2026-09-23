@@ -96,4 +96,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Sonic3HD-Android-Release-Build
-          path: android/bin/Release/net8.0-android/*-aligned.apk
+          path: android/bin/Release/net8.0-android/*.apk

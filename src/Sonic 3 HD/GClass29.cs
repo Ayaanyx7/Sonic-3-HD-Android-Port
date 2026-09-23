@@ -10,6 +10,11 @@ public class GClass29
 	// Token: 0x060000F0 RID: 240 RVA: 0x0000A178 File Offset: 0x00008378
 	public GClass29(GClass25 gclass25_1)
 	{
+		if (GClass25.stopwatch_0 == null)
+		{
+			GClass25.stopwatch_0 = new System.Diagnostics.Stopwatch();
+		}
+		
 		if (GClass25.stopwatch_0.IsRunning)
 		{
 			GClass25.stopwatch_0.Stop();

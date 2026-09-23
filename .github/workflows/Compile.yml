@@ -86,6 +86,15 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
+      - name: Compile and Package Android APK
+        run: |
+          dotnet publish android/Sonic3HDAndroid.csproj \
+            -c Release \
+            -f net8.0-android \
+            -p:CheckEolTargetFramework=false \
+            -p:CreatePackagePerAbi=true \
+            -p:AndroidBuildApplicationPackage=true
+
       # NEW: Sweeps the ENTIRE android folder top-to-bottom for the APK file
       - name: Deep Search and Stage APK
         run: |

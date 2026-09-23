@@ -238,7 +238,7 @@ public class GClass29
 				{
 					GClass29.gclass24_0.int_2[this.int_3, this.int_2] = GClass29.gclass24_0.int_2[this.int_3, this.int_2] % 1000;
 				}
-				GClass29.gclass24_0.int_2[this.int_3, this.int_2];
+				//GClass29.gclass24_0.int_2[this.int_3, this.int_2];
 			}
 			if (this.gclass25_0.int_8 == 1)
 			{
@@ -247,7 +247,7 @@ public class GClass29
 				{
 					GClass29.gclass24_0.int_2[this.int_3, this.int_2] = GClass29.gclass24_0.int_2[this.int_3, this.int_2] + (1 + GClass29.gclass24_0.texture2D_2.Length) * 1000;
 				}
-				GClass29.gclass24_0.int_2[this.int_3, this.int_2];
+				//GClass29.gclass24_0.int_2[this.int_3, this.int_2];
 			}
 			if (GClass29.gclass24_0.bool_0[GClass29.gclass24_0.int_2[this.int_3, this.int_2] % 1000])
 			{
@@ -561,7 +561,7 @@ public class GClass29
 	{
 		this.method_4();
 		MouseState state = Mouse.GetState();
-		if (state.LeftButton == 1)
+		if (state.LeftButton == ButtonState.Pressed)
 		{
 			this.int_5++;
 		}
@@ -569,7 +569,7 @@ public class GClass29
 		{
 			this.int_5 = 0;
 		}
-		if (state.RightButton == 1)
+		if (state.RightButton == ButtonState.Pressed)
 		{
 			this.int_6++;
 		}
@@ -577,7 +577,7 @@ public class GClass29
 		{
 			this.int_6 = 0;
 		}
-		if (state.MiddleButton == 1)
+		if (state.MiddleButton == ButtonState.Pressed)
 		{
 			this.int_7++;
 		}
@@ -1026,7 +1026,7 @@ public class GClass29
 			if (this.bool_1)
 			{
 				this.gclass25_0.spriteBatch_0.End();
-				this.gclass25_0.spriteBatch_0.Begin(1, BlendState.Opaque);
+				this.gclass25_0.spriteBatch_0.Begin((SpriteSortMode)1, BlendState.Opaque);
 				for (int j = 0; j < GClass29.gclass24_0.int_1; j++)
 				{
 					this.gclass25_0.spriteBatch_0.Draw(GClass29.gclass24_0.texture2D_0[j], new Rectangle(j % this.int_16 * this.int_4 / this.int_14, j / this.int_16 * this.int_4 / this.int_14, this.int_4 / this.int_14, this.int_4 / this.int_14), Color.White);

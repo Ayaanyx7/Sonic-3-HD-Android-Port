@@ -471,7 +471,7 @@ public class GClass24
 		}
 		for (int i = 0; i < this.int_6; i++)
 		{
-			for (j = 0; j < this.int_5; j++)
+			for (int j = 0; j < this.int_5; j++)
 			{
 				this.int_3[i, j] = (int)binaryReader.ReadInt16();
 			}

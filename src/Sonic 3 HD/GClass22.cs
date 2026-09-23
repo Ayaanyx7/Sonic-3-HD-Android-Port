@@ -3570,11 +3570,11 @@ public class GClass22 : GClass0
 			SpriteEffects spriteEffects;
 			if (this.bool_0)
 			{
-				spriteEffects = 0;
+				spriteEffects = (SpriteEffects)0;
 			}
 			else
 			{
-				spriteEffects = 1;
+				spriteEffects = (SpriteEffects)1;
 			}
 			if (!this.bool_4)
 			{
@@ -3619,11 +3619,11 @@ public class GClass22 : GClass0
 			}
 			if (this.bool_0)
 			{
-				spriteEffects = 0;
+				spriteEffects = (SpriteEffects)0;
 			}
 			else
 			{
-				spriteEffects = 1;
+				spriteEffects = (SpriteEffects)1;
 			}
 			Color color;
 			if (GClass29.color_0 == Color.Black)

@@ -4,11 +4,12 @@
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     
-    <!-- CRITICAL CONFIGURATION: Points directly to your manifest layout block -->
+    <!-- CRITICAL FIXES: Points to manifest, locks mobile architecture, and prevents duplicate file item crashes -->
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
     <UseRidGraph>true</UseRidGraph>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     
     <!-- Must be Exe for MonoGame runtime entry points -->
     <OutputType>Exe</OutputType>
@@ -25,23 +26,3 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!-- EXPLICIT APP LINKS: Ensures MainActivity is recognized cleanly outside wildcards -->
-    <Compile Include="MainActivity.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
-    
-    <!-- Clear decompiler assembly tokens -->
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
-
-    <!-- Modern MonoGame Engine Backend for Android -->
-    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Map the assets explicitly from the target directory tree -->
-    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
-  </ItemGroup>
-</Project>

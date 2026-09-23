@@ -16,6 +16,8 @@ jobs:
         shell: bash
         run: |
           echo '{"sdk": {"version": "8.0.400", "rollForward": "latestMinor"}}' > global.json
+          mkdir -p android
+          echo '{"sdk": {"version": "8.0.400", "rollForward": "latestMinor"}}' > android/global.json
 
       # Sets up .NET 8, which is the foundational engine framework for modern MonoGame
       - name: Setup .NET
@@ -34,68 +36,52 @@ jobs:
       - name: Install .NET Android Workload
         run: dotnet workload install android
 
-            # NEW: Automatically sweeps and rewrites the broken decompiler structures globally
+      # Installs the missing MonoGame engine build tools directly onto the cloud compiler runner
+      - name: Install MonoGame Engine Build Tools
+        run: |
+          dotnet tool install -g dotnet-mgcb
+          dotnet tool install -g dotnet-mgcb-editor
+
+      # Automatically cleans up the final decompiler bugs in GClass22, GClass25, and GClass29
       - name: Decompiler Syntax Code Patching
         run: |
           echo "Executing hyper-targeted code syntax cleanup..."
           
-          # 1. FIX DESKTOP WINDOWS FORMS (GClass25)
+          # 1. WINDOWS DESKTOP HOOK REMOVAL (GClass25)
           find src/ -name "GClass25.cs" -type f -exec sed -i '/using System.Windows.Forms;/d' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/Form form = (Form)Control.FromHandle(base.Window.Handle);/bool formIsMinimized = false;/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/if (form.WindowState != FormWindowState.Minimized)/if (!formIsMinimized)/g' {} +
-
-          # 2. SAFE DIRECTIVE INJECTION (Prevents duplicate usings errors)
-          # Only adds the framework namespaces if they aren't already present in the target files
-          grep -qxF 'using Microsoft.Xna.Framework.Graphics;' src/**/*.cs || find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\n/' {} +
-          grep -qxF 'using Microsoft.Xna.Framework.Input;' src/**/*.cs || find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Input;\n/' {} +
-
-          # 3. HYPER-TARGETED INPUT FLAGS MAPPING (GClass24)
-          # Specifically maps lines 37-41, 239-243, and 625 which are strict boolean field definitions
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/public static int (bool_[A-Za-z0-9_]+);/public static bool \1;/g' {} +
-          find src/ -name "GClass24.cs" -type f -exec sed -i -E 's/int (bool_[A-Za-z0-9_]+) =/bool \1 =/g' {} +
-          
-          # 4. FIX CONSTRUCTOR COLLISION AND KEYBOARD LOOKUPS
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
-
-          # 5. FIX RENDERTARGET SIGNATURE & GAMEPAD COMPASS BUTTON
-          find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/\.Back == 1/\.Back == ButtonState.Pressed/g' {} +
+          find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
 
-          # 6. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Microsoft.Xna.Framework.Color.White;/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/Vector2 ([A-Za-z0-9_]+);/Vector2 \1 = Microsoft.Xna.Framework.Vector2.Zero;/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/Rectangle ([A-Za-z0-9_]+);/Rectangle \1 = Microsoft.Xna.Framework.Rectangle.Empty;/g' {} +
+          # 2. FIX GClass29 STRAY EXPRESSIONS, MOUSE STATE, AND DRAW BEGIN SIGNATURES
+          find src/ -name "GClass29.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+_0;/\/\/ WIPED STRAY/g' {} +
+          find src/ -name "GClass29.cs" -type f -exec sed -i 's/\.LeftButton == 1/\.LeftButton == ButtonState.Pressed/g' {} +
+          find src/ -name "GClass29.cs" -type f -exec sed -i 's/\.Begin(1,/.Begin((SpriteSortMode)1, /g' {} +
 
-          # 7. FIX CS0266: DEEP SPRITEEFFECTS ASSIGNMENTS
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/SpriteEffects ([A-Za-z0-9_]+) = ([0-9]+);/SpriteEffects \1 = (SpriteEffects)\2;/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/ = ([0-9]+) \? SpriteEffects\.None/ = (SpriteEffects)\1 \? SpriteEffects.None/g' {} +
+          # 3. FIX GClass22 ANIMATION FIELD SPRITEEFFECTS CASTING
+          find src/ -name "GClass22.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
 
-          # 8. WIPE DECOMPILER DEAD CODE & BROKEN LABELS
-          find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ REMOVED IL GOTO/g' {} +
+          # 4. GENERAL NAVIGATION LABEL SWEEP
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ Wiped/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
-          
-          # Aggressive fix for standalone variable expressions on line 113 of GClass19
-          find src/ -name "GClass19.cs" -type f -exec sed -i '113d' {} +
+          echo "Done!"
 
-          echo "Decompiler syntax repair completed successfully!"
-
-
-      # FIXED: Points straight into the new 'android/' subfolder workspace path
       - name: Restore Dependencies
         run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
+      # Compiles and forces .NET 8 / MonoGame to package the actual application archive package
       - name: Compile and Package Android APK
         run: |
           dotnet publish android/Sonic3HDAndroid.csproj \
             -c Release \
             -f net8.0-android \
+            -r android-arm64 \
             -p:CheckEolTargetFramework=false \
             -p:CreatePackagePerAbi=true \
             -p:AndroidBuildApplicationPackage=true
 
-      # NEW: Sweeps the ENTIRE android folder top-to-bottom for the APK file
+      # Deep sweeps the entire repository folder structure to find the newly compiled game file
       - name: Deep Search and Stage Android Package
         run: |
           mkdir -p drop
@@ -105,9 +91,9 @@ jobs:
           echo "Staged files configuration summary:"
           ls -la drop/
 
-      # GUARANTEED: Uploads whatever APK file was found anywhere in your project structure
+      # Targets our staging folder to upload whatever installer asset was generated
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Sonic3HD-Android-Release-Build
-          path: drop/*.apk
+          path: drop/*

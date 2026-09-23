@@ -42,7 +42,7 @@ jobs:
           dotnet tool install -g dotnet-mgcb
           dotnet tool install -g dotnet-mgcb-editor
 
-      # Automatically cleans up the final decompiler bugs in GClass22, GClass25, and GClass29
+      # Automatically cleans up the final decompiler bugs globally across all classes
       - name: Decompiler Syntax Code Patching
         run: |
           echo "Executing hyper-targeted code syntax cleanup..."
@@ -54,15 +54,30 @@ jobs:
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/\.Back == 1/\.Back == ButtonState.Pressed/g' {} +
           find src/ -name "GClass25.cs" -type f -exec sed -i 's/, 1, 2);/, 1, (Microsoft.Xna.Framework.Graphics.RenderTargetUsage)2);/g' {} +
 
-          # 2. FIX GClass29 STRAY EXPRESSIONS, MOUSE STATE, AND DRAW BEGIN SIGNATURES
+          # 2. INJECT MISSING XNA GRAPHICS & INPUT DIRECTIVES GLOBALLY
+          find src/ -name "*.cs" -type f -exec sed -i '1s/^/using Microsoft.Xna.Framework.Graphics;\nusing Microsoft.Xna.Framework.Input;\n/' {} +
+
+          # 3. FIX CS0165: PRE-INITIALIZE GENERIC LOCAL VARIABLES TO PREVENT BUILD CRASHES
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/Color (white|color|color_[0-9]+);/Color \1 = Microsoft.Xna.Framework.Color.White;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/Vector2 ([A-Za-z0-9_]+);/Vector2 \1 = Microsoft.Xna.Framework.Vector2.Zero;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/Rectangle ([A-Za-z0-9_]+);/Rectangle \1 = Microsoft.Xna.Framework.Rectangle.Empty;/g' {} +
+
+          # 4. FIX CONSTRUCTOR RANGE OPERATOR COLLISION (Wipes out the explicit structural ..ctor statement tokens entirely)
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/([A-Za-z0-9_]+\.\.ctor\(.*\);)/\/\/ COMPILER FIX: \1/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.IsKeyDown\(([0-9]+)\)/.IsKeyDown((Keys)\1)/g' {} +
+
+          # 5. FIX GClass29 STRAY EXPRESSIONS, MOUSE STATE, AND DRAW BEGIN SIGNATURES
           find src/ -name "GClass29.cs" -type f -exec sed -i -E 's/^[[:space:]]+[A-Za-z0-9_]+_0;/\/\/ WIPED STRAY/g' {} +
           find src/ -name "GClass29.cs" -type f -exec sed -i 's/\.LeftButton == 1/\.LeftButton == ButtonState.Pressed/g' {} +
           find src/ -name "GClass29.cs" -type f -exec sed -i 's/\.Begin(1,/.Begin((SpriteSortMode)1, /g' {} +
 
-          # 3. FIX GClass22 ANIMATION FIELD SPRITEEFFECTS CASTING
-          find src/ -name "GClass22.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
+          # 6. FIX SPRITEEFFECTS AND KEYBOARD INPUT SIGNATURE CONVERSIONS
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/SpriteEffects ([A-Za-z0-9_]+) = ([0-9]+);/SpriteEffects \1 = (SpriteEffects)\2;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/\.spriteEffects_([0-9]+) = ([0-9]+);/\.spriteEffects_\1 = (SpriteEffects)\2;/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/ = ([0-9]+) \? SpriteEffects\.None/ = (SpriteEffects)\1 \? SpriteEffects.None/g' {} +
+          find src/ -name "*.cs" -type f -exec sed -i -E 's/DrawingCalls\(([^,]+), ([0-9]+),/DrawingCalls\1, (SpriteEffects)\2,/g' {} +
 
-          # 4. GENERAL NAVIGATION LABEL SWEEP
+          # 7. GENERAL NAVIGATION LABEL SWEEP AND DEAD CODE CLEANUP
           find src/ -name "*.cs" -type f -exec sed -i -E 's/goto IL_[A-Za-z0-9_]+;/\/\/ Wiped/g' {} +
           find src/ -name "*.cs" -type f -exec sed -i -E 's/^[[:space:]]*IL_[A-Za-z0-9_]+:[[:space:]]*//g' {} +
           echo "Done!"

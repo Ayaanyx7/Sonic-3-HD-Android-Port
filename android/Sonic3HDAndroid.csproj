@@ -4,8 +4,9 @@
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     
-    <!-- CRITICAL FIX: Forces .NET 8 to package the project into a physical installable APK -->
-    <RuntimeIdentifiers>android-arm64;android-x86_64</RuntimeIdentifiers>
+    <!-- CRITICAL FIX: Locks target to mobile arm64 and forces the compiler to accept legacy profiles safely -->
+    <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+    <UseRidGraph>true</UseRidGraph>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
     
     <!-- CRITICAL: Must be Library for Android, NOT Exe -->
@@ -27,24 +28,3 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!-- Grab absolutely everything inside your decompiled src path -->
-    <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
-    
-    <!-- FIX: Corrected the XML brackets for the module token files -->
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
-    
-    <!-- Exclude illegal explicit MulticastDelegate classes -->
-    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
-
-    <!-- Modern MonoGame Engine Backend for Android -->
-    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Map the assets explicitly from the target directory tree -->
-    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
-  </ItemGroup>
-</Project>

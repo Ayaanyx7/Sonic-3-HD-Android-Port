@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+p<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!-- Target modern Android via .NET 8 -->
     <TargetFramework>net8.0-android</TargetFramework>
@@ -26,3 +26,23 @@
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- EXPLICIT APP LINKS: Ensures MainActivity is recognized cleanly outside wildcards -->
+    <Compile Include="MainActivity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
+    
+    <!-- Clear decompiler assembly tokens -->
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
+    <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
+
+    <!-- Modern MonoGame Engine Backend for Android -->
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Map the assets explicitly from the target directory tree -->
+    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*" />
+  </ItemGroup>
+</Project>

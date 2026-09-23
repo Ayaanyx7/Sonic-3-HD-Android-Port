@@ -4,21 +4,18 @@
     <TargetFramework>net8.0-android</TargetFramework>
     <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
     
-    <!-- CRITICAL FIX: Locks target to mobile arm64 and forces the compiler to accept legacy profiles safely -->
+    <!-- CRITICAL CONFIGURATION: Points directly to your manifest layout block -->
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
     <UseRidGraph>true</UseRidGraph>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
     
-    <!-- CRITICAL: Must be Library for Android, NOT Exe -->
-    <OutputType>Library</OutputType>
+    <!-- Must be Exe for MonoGame runtime entry points -->
+    <OutputType>Exe</OutputType>
     
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    
-    <!-- Matches your C# 5.0 dnSpy extraction baseline perfectly -->
     <LangVersion>5.0</LangVersion> 
-    
-    <!-- Prevents duplicate assembly metadata property conflicts -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     
     <AssemblyName>Sonic3HD</AssemblyName>
@@ -30,14 +27,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Grab absolutely everything inside your decompiled src path -->
+    <!-- EXPLICIT APP LINKS: Ensures MainActivity is recognized cleanly outside wildcards -->
+    <Compile Include="MainActivity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)../src/**/*.cs" />
     
-    <!-- FIX: Corrected the XML brackets for the module token files -->
+    <!-- Clear decompiler assembly tokens -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;Module&gt;*.cs" />
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/&lt;PrivateImplementationDetails&gt;*.cs" />
-    
-    <!-- Exclude illegal explicit MulticastDelegate classes -->
     <Compile Remove="$(MSBuildThisFileDirectory)../src/**/Delegate*.cs" />
 
     <!-- Modern MonoGame Engine Backend for Android -->

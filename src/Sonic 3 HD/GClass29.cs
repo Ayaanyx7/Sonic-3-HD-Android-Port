@@ -110,21 +110,11 @@ public class GClass29
 		GClass29.spriteFont_0 = this.gclass25_0.Content.Load<SpriteFont>("misc/WinterFont1");
 		GClass29.spriteFont_1 = this.gclass25_0.Content.Load<SpriteFont>("misc/creditsFont0");
 		GClass29.spriteFont_2 = this.gclass25_0.Content.Load<SpriteFont>("misc/creditsFont1");
-		if (GClass25.stopwatch_0.IsRunning)
+				if (GClass25.stopwatch_0.IsRunning)
 		{
 			GClass25.stopwatch_0.Stop();
-			GameWindow window = this.gclass25_0.Window;
-			object title = window.Title;
-			window.Title = string.Concat(new object[]
-			{
-				title,
-				"  Loading time: ",
-				GClass25.stopwatch_0.Elapsed.Seconds,
-				".",
-				GClass25.stopwatch_0.Elapsed.Milliseconds,
-				" seconds   pre tech demo build 99"
-			});
-			GClass25.string_0 = this.gclass25_0.Window.Title;
+			// Wiped desktop window title properties to prevent NullReferenceException on Android
+			GClass25.string_0 = "Sonic 3 HD Mobile";
 		}
 	}
 

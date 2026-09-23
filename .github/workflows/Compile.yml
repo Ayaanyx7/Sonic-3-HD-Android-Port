@@ -96,15 +96,13 @@ jobs:
             -p:AndroidBuildApplicationPackage=true
 
       # NEW: Sweeps the ENTIRE android folder top-to-bottom for the APK file
-      - name: Deep Search and Stage APK
+      - name: Deep Search and Stage Android Package
         run: |
           mkdir -p drop
-          echo "Scanning entire android folder for compiled APK files..."
-          
-          # Searches absolutely everywhere inside the android/ workspace directory
-          find android/ -type f -name "*.apk" -exec cp {} drop/ \;
-          
-          echo "Staged APK content folder state:"
+          echo "Scanning workspace for compiled Android distribution files..."
+          find . -type f -name "*.apk" -exec cp {} drop/ \;
+          find . -type f -name "*.aab" -exec cp {} drop/ \;
+          echo "Staged files configuration summary:"
           ls -la drop/
 
       # GUARANTEED: Uploads whatever APK file was found anywhere in your project structure

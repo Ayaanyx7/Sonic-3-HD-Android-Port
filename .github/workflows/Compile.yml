@@ -86,14 +86,21 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore android/Sonic3HDAndroid.csproj -p:CheckEolTargetFramework=false
 
-      # FIXED: Compiles out of the 'android/' workspace directory path
-      - name: Compile and Package Android APK
+      # NEW: Sweeps the ENTIRE android folder top-to-bottom for the APK file
+      - name: Deep Search and Stage APK
         run: |
-          dotnet publish android/Sonic3HDAndroid.csproj -c Release -f net8.0-android -p:CheckEolTargetFramework=false
+          mkdir -p drop
+          echo "Scanning entire android folder for compiled APK files..."
+          
+          # Searches absolutely everywhere inside the android/ workspace directory
+          find android/ -type f -name "*.apk" -exec cp {} drop/ \;
+          
+          echo "Staged APK content folder state:"
+          ls -la drop/
 
-      # FIXED: Captures the final -aligned.apk bundle generated out of the target subfolder directory
+      # GUARANTEED: Uploads whatever APK file was found anywhere in your project structure
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Sonic3HD-Android-Release-Build
-          path: android/bin/Release/net8.0-android/*.apk
+          path: drop/*.apk

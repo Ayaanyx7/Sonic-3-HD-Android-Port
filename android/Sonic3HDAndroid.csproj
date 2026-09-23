@@ -43,8 +43,8 @@
 
   <ItemGroup>
     <!-- Map the assets explicitly from the target directory tree -->
-    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*">
-      <Link>Assets/Content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/Content/**/*">
+      <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </AndroidAsset>
   </ItemGroup>
 </Project>

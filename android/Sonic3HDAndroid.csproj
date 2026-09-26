@@ -45,9 +45,6 @@
 
   <ItemGroup>
     <!-- Uhh cool it gets the content yay -->
-    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/MobileContent\**\*">
-      <Link>Content/%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AndroidAsset>
+    <MonoGameContentReference Include="$(MSBuildThisFileDirectory)../src/MobileContent/Content.mgcb" Link="Content/Content.mgcb" />
   </ItemGroup>
 </Project>

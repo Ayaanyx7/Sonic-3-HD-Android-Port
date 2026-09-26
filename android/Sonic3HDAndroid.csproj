@@ -10,7 +10,9 @@
     <UseRidGraph>true</UseRidGraph>
     <AndroidPackageFormats>apk</AndroidPackageFormats>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    
+
+    <AndroidAapt2NoCompress>xnb</AndroidAapt2NoCompress>
+
     <!-- Must be Exe for MonoGame runtime entry points -->
     <OutputType>Exe</OutputType>
     
@@ -43,8 +45,8 @@
 
   <ItemGroup>
     <!-- Uhh cool it gets the content yay -->
-    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/MobileContent/**/*">
-      <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/MobileContent\**\*">
+      <Link>Assets\Content\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </AndroidAsset>
   </ItemGroup>
 </Project>

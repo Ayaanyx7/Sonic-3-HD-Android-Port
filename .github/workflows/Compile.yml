@@ -84,7 +84,8 @@ jobs:
             -p:CheckEolTargetFramework=false \
             -p:CreatePackagePerAbi=true \
             -p:AndroidBuildApplicationPackage=true \
-            -p:AndroidPackageFormat=apk
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidAapt2NoCompress="xnb"
 
       # Deep sweeps the entire repository folder structure to find the newly compiled game file
       - name: Deep Search and Stage Android Package

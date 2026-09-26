@@ -80,13 +80,12 @@ jobs:
           
           # 6. Wipe out any old outputs and drop the fresh files into the repository asset folder
           rm -rf src/MobileContent
-          mkdir -p src/MobileContent/Content
+          mkdir -p src/MobileContent
           
-          # Force the compiled asset trees to copy directly under a physical Content/ folder
           if [ -d "android_content/bin/Android/Content" ]; then
-            cp -r android_content/bin/Android/Content/* src/MobileContent/Content/
+            cp -r android_content/bin/Android/Content/* src/MobileContent/
           else
-            cp -r android_content/bin/Android/* src/MobileContent/Content/
+            cp -r android_content/bin/Android/* src/MobileContent/
           fi
 
       # 7. Automatically commits the newly generated assets back into your repository branch

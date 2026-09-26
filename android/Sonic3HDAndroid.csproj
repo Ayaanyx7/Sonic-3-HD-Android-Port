@@ -46,7 +46,7 @@
   <ItemGroup>
     <!-- Uhh cool it gets the content yay -->
     <AndroidAsset Include="$(MSBuildThisFileDirectory)../src/MobileContent\**\*">
-      <Link>assets\Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Link>assets/Content/%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AndroidAsset>
   </ItemGroup>

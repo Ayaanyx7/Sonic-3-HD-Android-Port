@@ -42,6 +42,12 @@ jobs:
           dotnet tool install -g dotnet-mgcb
           dotnet tool install -g dotnet-mgcb-editor
 
+      - name: Compile content
+        run: |
+          dotnet tool install -g dotnet-mgcb
+          cd src/MobileContent
+          mgcb /@:Content.mgcb
+
       # Handles ONLY the critical desktop Windows Form stubbing in GClass25 safely 
       - name: Decompiler Syntax Code Patching
         run: |
